@@ -2,13 +2,13 @@
 version: '2'
 
 volumes:
-  filesync-thd:
+  filesync-wsf:
 
 services:
   # ui:
   #   build: .
   #   container_name: ui
-  #   image: oaklabs/thd:latest
+  #   image: oaklabs/wsf:latest
   #   network_mode: host
   #   privileged: true
   #   devices:
@@ -31,7 +31,7 @@ services:
   #     GS_URL: gs://filefiesta/homedepot
   #     INTERVAL: 600
   #   volumes:
-  #     - filesync-thd:/data/oak/filesync/files:rw
+  #     - filesync-wsf:/data/oak/filesync/files:rw
 
   api:
     container_name: api

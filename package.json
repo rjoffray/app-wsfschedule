@@ -1,14 +1,14 @@
 {
-  "name": "thd",
-  "version": "2.1.0",
-  "description": "THD",
+  "name": "wsf",
+  "version": "1.0.0",
+  "description": "wsf schedule signage",
   "main": "src/server.js",
   "scripts": {
     "start": "node_modules/.bin/oak src/server.js",
     "dev": "NODE_ENV=development npm start",
     "test": "exit 0;"
   },
-  "author": "Flynn Joffray <nucleardreamer@gmail.com>",
+  "author": "Richard Joffray <richard@joffray.com>",
   "license": "None",
   "dependencies": {
     "angular": "~1.6.4",
@@ -19,7 +19,7 @@
     "express": "~4.15.3",
     "jsonpointer": "~4.0.1",
     "lodash": "~4.17.4",
-    "moment": "^2.20.1",
+    "moment": "~2.20.1",
     "ng-idle": "~1.3.2",
     "oak-tools": "~0.5.1",
     "pug": "~2.0.0-rc.2",

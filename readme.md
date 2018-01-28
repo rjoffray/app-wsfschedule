@@ -33,9 +33,6 @@ src/
 
 Inside the `views` directory, we have a number of directories that are routes in the UI. The `.js` files get auto-loaded, but the stylus files are loaded via `views/index.styl`.
 
-## Prepare the API service
-
-The only hard requirement of THD is `filesync` and `oakos-api`. You will want to run `docker-compose up` in this directory. The files will all sync down, and you are good to go. If you can't hit `https://localhost/` after starting the containers, this means you most likely don't have the ports bound, or permissions to bind 443.
 
 ```bash
 docker-compose up
