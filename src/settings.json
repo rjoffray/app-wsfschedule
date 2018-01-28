@@ -12,7 +12,10 @@
     "appInfo": {
       "title": "Burton Coffee Stand",
       "lat":"47.389459", 
-      "lon": "-122.466070"
+      "lon": "-122.466070",
+      "travelTimes": {
+        "fauntleroy": ""
+      }
     },
     "lights": {
       "delay": {

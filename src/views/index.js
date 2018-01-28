@@ -14,10 +14,9 @@ window.getScope = function () {
   return s
 }
 
-let app = window.angular
-  .module('thd', [
-    'ngAnimate',
-    'ngIdle'
+window.angular
+  .module('appWsfschedule', [
+    'ngAnimate'
   ])
   .constant('uuid', window.uuid)
   .constant('md5', window.md5)
@@ -27,9 +26,6 @@ let app = window.angular
   .run(function ($rootScope, oakApi, $q) {
     $rootScope.settings = window.settings
     $rootScope._ = window.lodash
-  })
-
-window.angular.module('app-wsfschedule')
-  .controller('mainController', function mainController ($rootScope, $scope, $transitions, $state, $analytics, $timeout, Idle, settings, uuid, oak, _) {
+  }).controller('mainController', function mainController ($rootScope, $scope, $timeout, settings, uuid, oak, _) {
     oak.ready()
   })

@@ -117,6 +117,10 @@ function loadWindow () {
         path: 'lodash'
       },
       {
+        name: 'moment',
+        path: 'moment'
+      },
+      {
         name: 'uuid',
         path: 'uuid'
       },
@@ -133,18 +137,8 @@ function loadWindow () {
         path: join(__dirname, 'lights')
       },
       join(__dirname, '..', 'node_modules', 'angular'),
-      join(__dirname, '..', 'node_modules', 'ng-idle'),
       join(__dirname, '..', 'node_modules', 'angular-animate'),
       join(__dirname, '..', 'node_modules', 'moment'),
-      join(__dirname, '..', 'node_modules', '@uirouter/angularjs'),
-      join(__dirname, '..', 'node_modules', 'angulartics'),
-      join(__dirname, '..', 'node_modules', 'angulartics-google-analytics'),
-      join(__dirname, '..', 'node_modules', 'angulartics', 'dist', 'angulartics-heap.min.js'), // disable automatic analytics, everything is STDOUT right now.
-      join(__dirname, '..', 'node_modules', 'videogular-buffering'),
-      join(__dirname, '..', 'node_modules', 'videogular-controls'),
-      join(__dirname, '..', 'node_modules', 'videogular-poster'),
-      join(__dirname, '..', 'node_modules', 'videogular-overlay-play'),
-      join(__dirname, 'public', 'js', 'vg-analytics.js'),
       ...jsFiles
     ]
   })

@@ -3,14 +3,8 @@ const _ = require('lodash')
 let _settings = require(join(__dirname, 'settings.json'))
 
 class Settings {
-  get category () {
-    return process.env.CATEGORY || _settings.category || 'electrical'
-  }
-  get physicalAisle () {
-    return process.env.PHYSICAL_AISLE || _settings.physical_aisle || '3'
-  }
-  get store () {
-    return _.toNumber(process.env.STORE || _settings.store || '1777')
+  get appInfo () {
+    return _settings.appInfo || 'none'
   }
   get all () {
     return _settings
