@@ -1,0 +1,23 @@
+{
+  "default": {
+    "heap": {
+      "project": "3260051144" 
+    },
+    "twilio": {
+      "sid": "ACa4b6cd92117aa8ca349ab4ac03c6ef1c",
+      "token": "145e5c2cd1b77408292bc291a84936f5",
+      "from": "+18009086986",
+      "timeout": 5000
+    },
+    "appInfo": {
+      "title": "Burton Coffee Stand",
+      "lat":"47.389459", 
+      "lon": "-122.466070"
+    },
+    "lights": {
+      "delay": {
+        "r": 20, "g": 20, "b": 20, "w": 15
+      }
+    }
+  }
+}

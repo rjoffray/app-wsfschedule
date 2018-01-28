@@ -1,0 +1,69 @@
+{
+  "basePath": "/assets/",
+  "definitions": {},
+  "info": {
+    "description": "THD assets spec\n",
+    "title": "Assets",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/meta/content.json": {
+      "get": {
+        "description": "content",
+        "operationId": "content",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "summary": "Content JSON",
+        "tags": [
+          "get"
+        ]
+      }
+    },
+    "/meta/categories.json": {
+      "get": {
+        "description": "categories",
+        "operationId": "categories",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "summary": "Categories JSON",
+        "tags": [
+          "get"
+        ]
+      }
+    },
+    "/videos/{name}": {
+      "get": {
+        "summary": "video asset",
+        "description": "",
+        "operationId": "video",
+        "tags": [
+          "get"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "video name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "video file",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    }
+  },
+  "swagger": 2.0
+}
