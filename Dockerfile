@@ -4,7 +4,6 @@ WORKDIR /data/oak/app
 COPY . /data/oak/app
 
 RUN npm i --engine-strict=true --progress=false --loglevel="error" \
-    && npm run rebuild \
     && npm cache clean
 
 VOLUME /data/oak/app

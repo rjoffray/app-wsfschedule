@@ -9,13 +9,10 @@ const url = require('url')
 const { existsSync } = require('fs')
 const qs = require('querystring')
 const tools = require('oak-tools')
-const Twilio = require('twilio')
 
 // this prevents window dialog instances from popping up when something throws. This gets logged instead of blowing up in the UI.
 oak.catchErrors()
 
-// lights are temporary, waiting for the oak lighting container to get updated
-const lights = require(join(__dirname, 'lights'))
 const settingsPath = join(__dirname, 'settings')
 
 const express = require('express')
@@ -75,7 +72,6 @@ app.get('/spec/:name', function ({ params }, res) {
 const jsFiles = _.map(
   [
     'index.js',
-    'api.service.js',
     ...(
       walkSync(viewsPath, {
         globs: ['*/*.js']
@@ -132,13 +128,8 @@ function loadWindow () {
         name: 'tools',
         path: 'oak-tools'
       },
-      {
-        name: 'lights',
-        path: join(__dirname, 'lights')
-      },
       join(__dirname, '..', 'node_modules', 'angular'),
       join(__dirname, '..', 'node_modules', 'angular-animate'),
-      join(__dirname, '..', 'node_modules', 'moment'),
       ...jsFiles
     ]
   })
@@ -151,43 +142,11 @@ function loadWindow () {
   .on('log.*', function (props) {
     logger[this.event.replace('log.', '')](props)
   })
-  .on('lights.change', function (toChange) {
-    logger.debug({
-      name: 'lights.change',
-      values: toChange,
-      devices: lights.getDevices()
-    })
-    lights.change(toChange, function (err) {
-      if (err) logger.error(new Error(err))
-    })
-  })
   .on('unresponsive', function () {
     reloadIt('renderer unresponsive')
   })
   .on('crashed', function () {
     reloadIt('renderer unresponsive')
-  })
-  // client side has shot over a SMS event
-  .on('sms', function ({ to, body }) {
-    // we load the default settings for twilio creds
-    let opts = (require(settingsPath)).all.default.twilio
-    let sms = new Twilio(
-      opts.sid,
-      opts.token
-    )
-    // if twilio hasnt responded in the settings timeout, just shoot back an error
-    let smsTimeout = setTimeout(function () {
-      window.send('sms.sent', {
-        errorCode: 666
-      })
-    }, opts.timeout)
-    // create the SMS and then clear the 'error' timeout above
-    sms.messages.create({
-      from: opts.from, to, body
-    }).then(message => {
-      clearTimeout(smsTimeout)
-      window.send('sms.sent', message)
-    })
   })
 }
 

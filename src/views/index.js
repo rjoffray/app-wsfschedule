@@ -23,7 +23,7 @@ window.angular
   .constant('oak', window.oak)
   .constant('settings', window.settings)
   .constant('_', window.lodash)
-  .run(function ($rootScope, oakApi, $q) {
+  .run(function ($rootScope, $q) {
     $rootScope.settings = window.settings
     $rootScope._ = window.lodash
   }).controller('mainController', function mainController ($rootScope, $scope, $timeout, settings, uuid, oak, _) {
