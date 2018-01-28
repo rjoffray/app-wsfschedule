@@ -5,6 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node_modules/.bin/oak src/server.js",
+    "dev": "NODE_ENV=development npm start",
     "test": "exit 0;"
   },
   "author": "Flynn Joffray <nucleardreamer@gmail.com>",

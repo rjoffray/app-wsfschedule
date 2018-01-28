@@ -1,4 +1,4 @@
-const debug = process.env.NODE_ENV !== 'prodproductionuction'
+const debug = process.env.NODE_ENV !== 'production'
 const dev = process.env.NODE_ENV === 'development'
 const { join } = require('path')
 const walkSync = require('walk-sync')
