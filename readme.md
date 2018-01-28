@@ -1,6 +1,6 @@
-# THD
+# WSF Schedule Project
 
-Home Depot DIY Kiosk
+Coffee Stand Kiosk
 
 ## How it's built
 
@@ -9,7 +9,7 @@ We are using the `oak` module to start our app. The current stack is
 * express (for local Server)
 * stylus (for CSS)
 * pug (for Markup)
-* angular w/ ui-router (front-end framework)
+* angular
 
 ### Structure
 
