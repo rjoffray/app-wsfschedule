@@ -18,5 +18,6 @@ html(ng-app='appWsfschedule')
         div.terminal(ng-bind-html="route.terminal")
         div.destination(ng-bind-html="route.destination")
         div.times
-          div.boat(ng-repeat="boat in route.times", ng-bind-html="boat.time", ng-class="{'current': $index == 1}")
-      
+          div.boat(ng-repeat="boat in route.times")
+            div.time(ng-class="{'current': $index == 1}") {{boat.time}}
+            div.status(ng-bind-html="boat.status" )

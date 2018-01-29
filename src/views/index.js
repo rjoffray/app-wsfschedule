@@ -48,7 +48,7 @@ window.angular
           },
           {
             'time': '9:40',
-            'status': ''
+            'status': 'delayed'
           },
           {
             'time': '10:15',

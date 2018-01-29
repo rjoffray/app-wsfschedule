@@ -6,6 +6,7 @@ $color-medium-dark ?= alpha(#fff, .10)
 $color-medium ?= alpha(#fff, .20)
 $color-light ?= alpha(#fff, .40)
 $color-white ?= alpha(#fff, .80)
+$color-red ?= alpha(red, .60)
 *
   display block
   box-sizing border-box
@@ -104,14 +105,20 @@ div.wrapper
       div.boat
         flex 1
         display flex
-        justify-content: center
+        flex-direction column
         height 100%
-        font-size 55px
-        font-weight 600
-        color $color-medium
-        &.current
-          color $color-white
-          font-size 70px
+        div.time
+          font-size 55px
+          font-weight 600
+          color $color-medium
+          &.current
+            color $color-white
+            margin-top 14px
+            font-size 70px
+        div.status
+          color $color-red
+          font-size 20px
+            
 
 
 
