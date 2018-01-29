@@ -1,6 +1,11 @@
 @import "includes/vars.styl"
 @import "includes/font.styl"
 
+$color-dark ?= #000
+$color-medium-dark ?= alpha(#fff, .10)
+$color-medium ?= alpha(#fff, .20)
+$color-light ?= alpha(#fff, .40)
+$color-white ?= alpha(#fff, .80)
 *
   display block
   box-sizing border-box
@@ -14,7 +19,7 @@
 
 body, html
   color $main-font-color
-  background-color $main-background
+  background-color $color-dark
   height 100%
   width 100%
   margin 0
@@ -30,15 +35,83 @@ body
   font-size 1rem
 
 // main sections
-
-wrapper
-  position absolute
-  top 0
-  left 0
+div
+  border 0px solid red
+div.wrapper
+  position relative
   height $main-height
   width $main-width
   margin 0
   padding 0
-  border 10px solid $main-background
+  border 0px solid $main-background
+  display flex
+  flex-direction column
+  justify-content center
+  align-items center
+  text-align center
+  div.overlay
+    position: absolute
+    top 33%
+    left 0
+    right 0
+    text-align center
+    color $color-white
+    div.poweredby
+      font-size: 14px
+    div.oakos
+      text-align center
+      display inline-block
+      img
+        margin 0 auto
+
+  div.header
+    text-align center
+    width 100%
+    font-size 30px
+    font-weight 400
+    div.title
+      font-size 200px
+      line-height 1em
+      color $color-medium
+    div.date{
+      color $color-light
+      font-weight 600
+      background-color $color-medium
+      padding 5px
+    }
+  div.route
+    width 100%
+    flex-grow 1
+    div.terminal
+      color $color-medium
+      font-weight 400
+      font-size 65px
+      line-height 1em
+      text-transform uppercase
+      background-color $color-medium-dark
+    div.destination
+      color $color-light
+      font-weight 600
+      font-size 30px
+      background-color $color-medium
+      padding 5px
+    div.times
+      display flex
+      justify-content center
+      align-items: center 
+      height 100%
+      padding-top 20px
+      div.boat
+        flex 1
+        display flex
+        justify-content: center
+        height 100%
+        font-size 55px
+        font-weight 600
+        color $color-medium
+        &.current
+          color $color-white
+          font-size 70px
+
 
 

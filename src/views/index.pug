@@ -6,5 +6,17 @@ html(ng-app='appWsfschedule')
     link(href='/helvetica.css', rel='stylesheet', type='text/css')
     link(href='/index.css', rel='stylesheet', type='text/css')
   body(ng-controller="mainController")
-    wrapper
+    div.wrapper
+      div.header
+        div.overlay Vashon Ferry Schedules
+          div.poweredby Powered by
+          div.oakos
+            img(src='img/logo.png' width='50%')
+        div.title WSF
+        div.date(ng-bind-html="today")
+      div.route(ng-repeat="route in routes")
+        div.terminal(ng-bind-html="route.terminal")
+        div.destination(ng-bind-html="route.destination")
+        div.times
+          div.boat(ng-repeat="boat in route.times", ng-bind-html="boat.time", ng-class="{'current': $index == 1}")
       

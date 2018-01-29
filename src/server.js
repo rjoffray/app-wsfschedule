@@ -130,6 +130,7 @@ function loadWindow () {
       },
       join(__dirname, '..', 'node_modules', 'angular'),
       join(__dirname, '..', 'node_modules', 'angular-animate'),
+      join(__dirname, '..', 'node_modules', 'angular-sanitize'),
       ...jsFiles
     ]
   })
