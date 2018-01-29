@@ -110,23 +110,11 @@ function loadWindow () {
       },
       {
         name: 'lodash',
-        path: 'lodash'
+        path: join(__dirname, '..', 'node_modules', 'lodash')
       },
       {
         name: 'moment',
-        path: 'moment'
-      },
-      {
-        name: 'uuid',
-        path: 'uuid'
-      },
-      {
-        name: 'async',
-        path: 'async'
-      },
-      {
-        name: 'tools',
-        path: 'oak-tools'
+        path: join(__dirname, '..', 'node_modules', 'moment')
       },
       join(__dirname, '..', 'node_modules', 'angular'),
       join(__dirname, '..', 'node_modules', 'angular-animate'),

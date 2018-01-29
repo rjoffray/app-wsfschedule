@@ -1,42 +1,35 @@
 ---
 version: '2'
 
-volumes:
-  filesync-wsf:
-
 services:
-  # ui:
-  #   build: .
-  #   container_name: ui
-  #   image: oaklabs/wsf:latest
-  #   network_mode: host
-  #   privileged: true
-  #   devices:
-  #     - /dev/dri
-  #     - /dev/bus/usb
-  #     - /dev/snd
-  #   volumes:
-  #     - /tmp/.X11-unix:/tmp/.X11-unix
-  #     - /dev/shm:/dev/shm
-  #     - /usr/share/fonts:/usr/share/fonts
-  #     - /run/udev:/run/udev
-  #     # - ./src:/data/oak/app/src
-  #     # - ../oak/lib:/opt/oak/lib
+  wsfschedule:
+    build: .
+    container_name: wsfschedule
+    image: oaklabs/app-wsfschedule:latest
+    network_mode: host
+    privileged: true
+    devices:
+      - /dev/dri
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /dev/shm:/dev/shm
+      # - ./src:/data/oak/app/src
+    # environment:
+    #   NODE_ENV: 'development'
 
-  # filesync:
-  #   container_name: filesync
-  #   image: oaklabs/filesync:2.0.1
-  #   network_mode: host
-  #   environment:
-  #     GS_URL: gs://filefiesta/homedepot
-  #     INTERVAL: 600
-  #   volumes:
-  #     - filesync-wsf:/data/oak/filesync/files:rw
-
+  lights:
+    container_name: lights
+    image: oaklabs/lights:2.0.0-rc2
+    privileged: true
+    network_mode: host
+    devices:
+      - /dev/bus/usb
+    volumes:
+      - /run/udev:/run/udev
   api:
     container_name: api
     image: oaklabs/oakos-api:1.5.1
     network_mode: host
     privileged: true
     volumes_from:
-      - filesync
+      - lights
