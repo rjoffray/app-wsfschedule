@@ -20,4 +20,4 @@ html(ng-app='appWsfschedule')
         div.times
           div.boat(ng-repeat="boat in route.times")
             div.time(ng-class="{'current': $index == 1}") {{boat.time}}
-            div.status(ng-bind-html="boat.status" )
+            div.status(ng-bind-html="boat.status || '&nbsp;'" )
