@@ -12,8 +12,8 @@ const { existsSync } = require('fs')
 const qs = require('querystring')
 const tools = require('oak-tools')
 const request = require('request')
-const fs = require('file-system')
-const _setInterval = require('setinterval-plus')
+const fs = require('graceful-fs')
+const _setTimeout = require('safe-timers').setTimeout
 
 const apiRoot = "http://www.wsdot.wa.gov/ferries/api/schedule/rest"
 const apiAccessCode = "beae0283-3493-4760-9997-04b1c32a23e2"
@@ -177,9 +177,12 @@ function writeSchedules(){
         _this.settings.default.appInfo.currentTime = moment().format('LLLL')
         window.send('loadSettings', {
             'data': _this.settings
-          }
-        )
+          })
+        _setTimeout(function (msg) {
+          writeSchedules()
+        }, 60000)
       }
+      
     })
   }
 
@@ -200,7 +203,7 @@ function writeSchedules(){
       
       })
       
-    return remainingTimes.slice(foundIndex, foundIndex + 3)
+    return remainingTimes.slice(foundIndex, Math.min(foundIndex+3, remainingTimes.length-1))
 
   }
   
@@ -210,11 +213,6 @@ function writeSchedules(){
     let route = _this.settings.default.appInfo.routes[routeIndex]
     _this.getSchedule(routeIndex, route.fileName, route.departingTerminalId, route.arrivingTerminalId, route.onlyRemainingTimes)
   }
-  
-  
-  let timer = new _setInterval(function () {
-    writeSchedules()
-  }, 60000)
   
 
 }
