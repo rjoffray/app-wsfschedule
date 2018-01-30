@@ -8,7 +8,7 @@ html(ng-app='appWsfschedule')
   body(ng-controller="mainController")
     div.wrapper
       div.header
-        div.overlay Vashon Ferry Schedules
+        div.overlay {{appName}}
           div.poweredby Powered by
           div.oakos
             img(src='img/logo.png' width='50%')
@@ -21,3 +21,4 @@ html(ng-app='appWsfschedule')
           div.boat(ng-repeat="boat in route.times")
             div.time(ng-class="{'current': $index == 1}") {{boat.time}}
             div.status(ng-bind-html="boat.status || '&nbsp;'" )
+    

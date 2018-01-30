@@ -3,12 +3,21 @@ const dev = process.env.NODE_ENV === 'development'
 const { join } = require('path')
 const walkSync = require('walk-sync')
 const _ = require('lodash')
+const moment = require('moment-timezone')
 const oak = require('oak')
 const pug = require('pug')
 const url = require('url')
+const util = require('util')
 const { existsSync } = require('fs')
 const qs = require('querystring')
 const tools = require('oak-tools')
+const request = require('request')
+const fs = require('file-system')
+const _setInterval = require('setinterval-plus')
+
+const apiRoot = "http://www.wsdot.wa.gov/ferries/api/schedule/rest"
+const apiAccessCode = "beae0283-3493-4760-9997-04b1c32a23e2"
+const timezone = "America/Los_Angeles"
 
 // this prevents window dialog instances from popping up when something throws. This gets logged instead of blowing up in the UI.
 oak.catchErrors()
@@ -74,7 +83,7 @@ const jsFiles = _.map(
     'index.js',
     ...(
       walkSync(viewsPath, {
-        globs: ['*/*.js']
+        globs: ['*/*.js','*/*/*.js']
       })
     )
   ], v => join(viewsPath, v)
@@ -127,6 +136,7 @@ function loadWindow () {
     if (dev) {
       window.debug()
     }
+    writeSchedules()
   })
   .on('log.*', function (props) {
     logger[this.event.replace('log.', '')](props)
@@ -144,4 +154,67 @@ function reloadIt (err) {
   logger.error(new Error(err))
   loadWindow()
   oldWindow.close()
+}
+
+function writeSchedules(){
+  let _this = this
+  _this.settings = require(settingsPath + '.json');
+  _this.routesLoaded = 0
+
+  _this.getSchedule = function(routeIndex, fileName, departingTerminalId, arrivingTerminalId, onlyRemaingTimes){
+    let apiUrl = util.format("%s/%s/%s/%s/%s?apiaccesscode=%s", apiRoot, "scheduletoday", departingTerminalId, arrivingTerminalId, onlyRemaingTimes, apiAccessCode)
+    let destinationUrl = join(publicPath, 'data', fileName)
+    let fileStream = fs.createWriteStream(destinationUrl)
+    request.get(apiUrl).pipe(fileStream)
+    fileStream.on('finish', function (err) { 
+      _this.routesLoaded ++
+      if(!err){
+        let newTimes = _this.scrubScheduleTimes(routeIndex, destinationUrl)
+        _this.settings.default.appInfo.routes[routeIndex].times = newTimes
+      } 
+      if(_this.settings.default.appInfo.routes.length === _this.routesLoaded){
+        console.log("Sent data at: ", moment().tz(timezone).toString())
+        _this.settings.default.appInfo.currentTime = moment().format('LLLL')
+        window.send('loadSettings', {
+            'data': _this.settings
+          }
+        )
+      }
+    })
+  }
+
+  _this.scrubScheduleTimes = function(routeIndex, destinationUrl){
+    let fullSchedule = require(destinationUrl)
+    let foundIndex = -1
+    let remainingTimes = fullSchedule.TerminalCombos[0].Times.map(
+      function(obj,index){
+        let now = moment().unix()
+        let unixTime = moment(obj.DepartingTime).unix()
+        if(unixTime >= now){
+          if(foundIndex == -1) foundIndex = index -1 
+        }
+        return {
+          'time': moment(obj.DepartingTime).format('h:mm'),
+          'status': ''
+        }
+      
+      })
+      
+    return remainingTimes.slice(foundIndex, foundIndex + 3)
+
+  }
+  
+  
+
+  for(let routeIndex in _this.settings.default.appInfo.routes){
+    let route = _this.settings.default.appInfo.routes[routeIndex]
+    _this.getSchedule(routeIndex, route.fileName, route.departingTerminalId, route.arrivingTerminalId, route.onlyRemainingTimes)
+  }
+  
+  
+  let timer = new _setInterval(function () {
+    writeSchedules()
+  }, 60000)
+  
+
 }
