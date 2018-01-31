@@ -19,6 +19,7 @@ const apiRoot = "http://www.wsdot.wa.gov/ferries/api/schedule/rest"
 const apiAccessCode = "beae0283-3493-4760-9997-04b1c32a23e2"
 const timezone = "America/Los_Angeles"
 
+
 // this prevents window dialog instances from popping up when something throws. This gets logged instead of blowing up in the UI.
 oak.catchErrors()
 
@@ -37,6 +38,12 @@ const logger = tools.logger({
 
 let publicPath = join(__dirname, 'public')
 let viewsPath = join(__dirname, 'views')
+/** 
+ * Setting this to yesterday will 
+ * force us to get new data when the app first starts
+ * we will use unix timestamp as a standard of comparison
+**/
+let cacheDate = moment().subtract(1, 'days').tz(timezone).unix().valueOf()
 
 app.set('views', viewsPath)
 app.set('view engine', 'pug')
@@ -160,32 +167,60 @@ function writeSchedules(){
   let _this = this
   _this.settings = require(settingsPath + '.json');
   _this.routesLoaded = 0
-
+  
   _this.getSchedule = function(routeIndex, fileName, departingTerminalId, arrivingTerminalId, onlyRemaingTimes){
-    let apiUrl = util.format("%s/%s/%s/%s/%s?apiaccesscode=%s", apiRoot, "scheduletoday", departingTerminalId, arrivingTerminalId, onlyRemaingTimes, apiAccessCode)
-    let destinationUrl = join(publicPath, 'data', fileName)
-    let fileStream = fs.createWriteStream(destinationUrl)
-    request.get(apiUrl).pipe(fileStream)
-    fileStream.on('finish', function (err) { 
-      _this.routesLoaded ++
-      if(!err){
-        let newTimes = _this.scrubScheduleTimes(routeIndex, destinationUrl)
-        _this.settings.default.appInfo.routes[routeIndex].times = newTimes
-      } 
-      if(_this.settings.default.appInfo.routes.length === _this.routesLoaded){
-        console.log("Sent data at: ", moment().tz(timezone).toString())
-        _this.settings.default.appInfo.currentTime = moment().format('LLLL')
-        window.send('loadSettings', {
-            'data': _this.settings
-          })
-        _setTimeout(function (msg) {
-          writeSchedules()
-        }, 60000)
+    let cacheFlushUrl = util.format("%s/%s?apiaccesscode=%s", apiRoot, "cacheflushdate", apiAccessCode)
+    let flushDate = null
+    /**
+     * We will need to check the WSF api endpoint 
+     * to see when the last time they flushed the cache
+     */
+    request.get(cacheFlushUrl,function(error, response, body){
+      /** if we dont have an error we can assume we have an internet connection */
+      if(!error){
+        flushDate = moment(JSON.parse(body)).tz(timezone).unix().valueOf()
       }
-      
+      let destinationUrl = join(publicPath, 'data', fileName)
+      /** 
+       * If the new flush date is greater that our last cache and there is no
+       * network error we will need to go get a new copy of the data
+       */
+      if(flushDate > cacheDate && !error){
+        let apiUrl = util.format("%s/%s/%s/%s/%s?apiaccesscode=%s", apiRoot, "scheduletoday", departingTerminalId, arrivingTerminalId, onlyRemaingTimes, apiAccessCode)
+        let fileStream = fs.createWriteStream(destinationUrl)
+        request.get(apiUrl).pipe(fileStream)
+        fileStream.on('finish', function (err) {
+          cacheDate = moment().tz(timezone).unix().valueOf()
+          console.log("got new data to cache: ", cacheDate) 
+          _this.sendData(routeIndex, destinationUrl, err)
+        })
+      }else{
+        console.log("using cached data: ", cacheDate) 
+        _this.sendData(routeIndex, destinationUrl)
+      }
     })
   }
-
+  _this.sendData = function(routeIndex, destinationUrl, err){
+    _this.routesLoaded ++
+        if(!err){
+          let newTimes = _this.scrubScheduleTimes(routeIndex, destinationUrl)
+          _this.settings.default.appInfo.routes[routeIndex].times = newTimes
+        } 
+        if(_this.settings.default.appInfo.routes.length === _this.routesLoaded){
+          console.log("Sent data at: ", moment().tz(timezone).toString())
+          _this.settings.default.appInfo.currentTime = moment().tz(timezone).format('LLLL')
+          window.send('loadSettings', {
+              'data': _this.settings
+            })
+            /**
+             * We are using a timeout to avoid using setInterval
+             * so we can repeat
+             */
+          _setTimeout(function (msg) {
+            writeSchedules()
+          }, 60000)
+        }
+  }
   _this.scrubScheduleTimes = function(routeIndex, destinationUrl){
     let fullSchedule = require(destinationUrl)
     let foundIndex = -1
@@ -193,15 +228,36 @@ function writeSchedules(){
       function(obj,index){
         let now = moment().unix()
         let unixTime = moment(obj.DepartingTime).unix()
+        //console.log(moment(obj.DepartingTime).format('h:mm'))
         if(unixTime >= now){
           if(foundIndex == -1) foundIndex = index -1 
         }
+      
         return {
           'time': moment(obj.DepartingTime).format('h:mm'),
-          'status': ''
+          'status': '',
+          'index': index
+
         }
       
       })
+    if(foundIndex == -1){
+      return [
+        {
+          "time": "&nbsp;",
+          "status": ""
+        },
+        {
+          "time": "",
+          "status": "No More Boats Today"
+        },
+        {
+          "time": "&nbsp;",
+          "status": " "
+        }
+      ]
+
+    }  
       
     return remainingTimes.slice(foundIndex, Math.min(foundIndex+3, remainingTimes.length-1))
 
