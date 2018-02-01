@@ -22,7 +22,6 @@ var wsfApp = window.angular.module(window.appName, [
   .config(function($sceDelegateProvider) {  
     $sceDelegateProvider.resourceUrlWhitelist(['self','http://www.wsdot.wa.gov/**'])
   })
-  .constant('uuid', window.uuid)
   .constant('md5', window.md5)
   .constant('oak', window.oak)
   .constant('settings', window.settings)

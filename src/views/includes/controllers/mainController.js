@@ -2,8 +2,8 @@
   'use strict';
 
   wsfApp.controller('mainController',MainController);
-  MainController.$inject = ["$window", "$log", "$rootScope", "$scope", "$interval", "$timeout", "settings", "uuid", "oak", "_", "moment"]
-  function MainController($window, $log, $rootScope, $scope, $interval, $timeout, settings, uuid, oak, _, moment) {
+  MainController.$inject = ["$window", "$log", "$rootScope", "$scope", "$interval", "$timeout", "settings", "oak", "_", "moment"]
+  function MainController($window, $log, $rootScope, $scope, $interval, $timeout, settings, oak, _, moment) {
     $scope.routes = []
     $scope.appName = ""
     
