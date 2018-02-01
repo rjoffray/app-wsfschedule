@@ -4,7 +4,7 @@
       "title": "Burton Coffee Stand",
       "lat": "47.389459",
       "lon": "-122.466070",
-      "appName": "Vashon Ferry Schedule",
+      "appName": "Vashon Ferry Schedules",
       "curentTime": "",
       "routes": [{
           "departingTerminalId": "22",

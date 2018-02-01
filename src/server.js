@@ -227,7 +227,7 @@ function writeSchedules(){
     let remainingTimes = fullSchedule.TerminalCombos[0].Times.map(
       function(obj,index){
         let now = moment().tz(timezone).unix()
-        let unixTime = moment(obj.tz(timezone).DepartingTime).unix()
+        let unixTime = moment(obj.DepartingTime).tz(timezone).unix()
         //console.log(moment(obj.DepartingTime).format('h:mm'))
         if(unixTime >= now){
           if(foundIndex == -1) foundIndex = index -1 
