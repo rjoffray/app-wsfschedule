@@ -47,18 +47,26 @@ div.wrapper
   text-align center
   div.overlay
     position: absolute
-    top 33%
+    top 73px
     left 0
     right 0
+    font-weight 300
     text-align center
     color $color-white
+  div.id-wrapper
+    position: absolute
+    right 11px
+    top 106px
     div.poweredby
-      font-size: 14px
+      font-size: 10px
+      font-weight: 300
     div.oakos
       text-align center
       display inline-block
+      margin-bottom: 5px
       img
         margin 0 auto
+        opacity: 1
 
   div.header
     text-align center
@@ -66,28 +74,35 @@ div.wrapper
     font-size 30px
     font-weight 400
     div.title
-      font-size 200px
+      font-size 131px
       line-height 1em
       color $color-medium
+      margin-top: -21px;
+      margin-bottom: -3px;
+      letter-spacing: 0.05em;
     div.date{
       color $color-light
-      font-weight 600
+      font-weight 300
       background-color $color-medium
       padding 5px
+      font-size 21px
+      margin-bottom: 13px;
     }
   div.route
     width 100%
     flex-grow 1
     div.terminal
       color $color-medium
-      font-weight 400
-      font-size 65px
+      font-weight 300
+      font-size 48px
       line-height 1em
       text-transform uppercase
       background-color $color-medium-dark
+      border-top .5px solid #f18571
+      padding 5px
     div.destination
       color $color-light
-      font-weight 600
+      font-weight 300
       font-size 30px
       background-color $color-medium
       padding 5px
@@ -110,7 +125,7 @@ div.wrapper
             color $color-white
             font-size 70px
         div.status
-          color $color-red
+          color $color-oak
           font-size 20px
             
 

@@ -8,12 +8,13 @@ html(ng-app='appWsfschedule')
   body(ng-controller="mainController")
     div.wrapper
       div.header
+        div.date(ng-bind-html="today")
         div.overlay {{appName}}
+        div.id-wrapper
           div.poweredby Powered by
           div.oakos
-            img(src='img/logo.png' width='50%')
+            img(src='img/logo_oakos.svg' width='18%')
         div.title WSF
-        div.date(ng-bind-html="today")
       div.route(ng-repeat="route in routes")
         div.terminal(ng-bind-html="route.terminal")
         div.destination(ng-bind-html="route.destination")
