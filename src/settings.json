@@ -13,7 +13,20 @@
           "terminal": "North Terminal",
           "destination": "Fauntleroy (West Seattle)",
           "onlyRemainingTimes": "false",
-          "times": []
+          "times": [
+            {
+              "time": "&nbsp;",
+              "status": ""
+            },
+            {
+              "time": "",
+              "status": "Waiting for Ferry Schedules..."
+            },
+            {
+              "time": "&nbsp;",
+              "status": " "
+            }
+          ]
         },
         {
           "departingTerminalId": "22",
@@ -22,7 +35,20 @@
           "terminal": "North Terminal",
           "destination": "Southworth (Kitsap Peninsula)",
           "onlyRemainingTimes": "false",
-          "times": []
+          "times": [
+            {
+              "time": "&nbsp;",
+              "status": ""
+            },
+            {
+              "time": "",
+              "status": "Waiting for Ferry Schedules..."
+            },
+            {
+              "time": "&nbsp;",
+              "status": " "
+            }
+          ]
         },
         {
           "departingTerminalId": "21",
@@ -31,7 +57,20 @@
           "terminal": "South Terminal",
           "destination": "Point Defiance (Tacoma)",
           "onlyRemainingTimes": "false",
-          "times": []
+          "times": [
+            {
+              "time": "&nbsp;",
+              "status": ""
+            },
+            {
+              "time": "",
+              "status": "Waiting for Ferry Schedules..."
+            },
+            {
+              "time": "&nbsp;",
+              "status": " "
+            }
+          ]
         }
 
       ]
