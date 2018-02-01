@@ -226,15 +226,15 @@ function writeSchedules(){
     let foundIndex = -1
     let remainingTimes = fullSchedule.TerminalCombos[0].Times.map(
       function(obj,index){
-        let now = moment().unix()
-        let unixTime = moment(obj.DepartingTime).unix()
+        let now = moment().tz(timezone).unix()
+        let unixTime = moment(obj.tz(timezone).DepartingTime).unix()
         //console.log(moment(obj.DepartingTime).format('h:mm'))
         if(unixTime >= now){
           if(foundIndex == -1) foundIndex = index -1 
         }
       
         return {
-          'time': moment(obj.DepartingTime).format('h:mm'),
+          'time': moment(obj.DepartingTime).tz(timezone).format('h:mm'),
           'status': '',
           'index': index
 
