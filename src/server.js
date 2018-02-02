@@ -166,25 +166,30 @@ function writeSchedules () {
   let _this = this
   _this.settings = require(settingsPath + '.json')
   _this.routesLoaded = 0
-  _this.sendStatusData = function(){
-      let vesselWatchUrl = "http://www.wsdot.com/ferries/vesselwatch/Vessels.ashx"
-      let vesselStatus = {}
-      request(vesselWatchUrl, function (error, response, body){
-          let data = JSON.parse(body)
-          data.vessellist.map(function(obj){
-            vesselStatus[obj.vesselID] = {
-              'name': obj.name,
-              'leftdock': obj.leftdock,
-              'eta': obj.eta,
-              'departDelayed': obj.departDelayed,
-            }
-          })
-          window.send('loadStatus', {
-            'data': vesselStatus
-          })
+  _this.sendStatusData = function () {
+    let vesselWatchUrl = 'http://www.wsdot.com/ferries/vesselwatch/Vessels.ashx'
+    let vesselStatus = {}
+    request({url: vesselWatchUrl, json: true}, function (error, response, body) {
+      body.vessellist.map(function (obj) {
+        vesselStatus[obj.vesselID] = {
+          'name': obj.name,
+          'leftdock': obj.leftdock,
+          'eta': obj.eta === 'Calculating' ? '' : obj.eta,
+          'departDelayed': obj.departDelayed
+        }
       })
-      
-      
+      if (error) {
+        logger.error({
+          msg: 'Error getting vesselWatch data'
+        })
+      }
+      window.send('loadStatus', {
+        'data': vesselStatus
+      })
+      logger.debug({
+        msg: 'Sent loadStatus'
+      })
+    })
   }
   _this.getSchedule = function (routeIndex, fileName, departingTerminalId, arrivingTerminalId, onlyRemaingTimes) {
     let cacheFlushUrl = util.format('%s/%s?apiaccesscode=%s', apiRoot, 'cacheflushdate', apiAccessCode)
@@ -210,16 +215,11 @@ function writeSchedules () {
         fileStream.on('finish', function (err) {
           cacheDate = moment().tz(timezone).unix().valueOf()
           logger.debug({
-            msg: 'new data to cache',
-            cacheDate
+            msg: 'Wrote cache: ' + fileName
           })
           _this.sendData(routeIndex, destinationUrl, err)
         })
       } else {
-        logger.debug({
-          msg: 'using cached data',
-          cacheDate
-        })
         _this.sendData(routeIndex, destinationUrl)
       }
     })
@@ -231,16 +231,14 @@ function writeSchedules () {
       _this.settings.default.appInfo.routes[routeIndex].times = newTimes
     }
     if (_this.settings.default.appInfo.routes.length === _this.routesLoaded) {
-      logger.debug({
-        msg: 'Sent data',
-        timestamp: moment().tz(timezone).toString()
-      })
       _this.settings.default.appInfo.currentTime = moment().tz(timezone).format('LLLL')
       window.send('loadSettings', {
         'data': _this.settings
       })
-      
-     
+      logger.debug({
+        msg: 'Sent loadSettings'
+      })
+
       /**
        * We are using a timeout to avoid using setInterval
        * so we can repeat
@@ -259,10 +257,10 @@ function writeSchedules () {
         let unixTime = moment(obj.DepartingTime).tz(timezone).unix()
         // console.log(moment(obj.DepartingTime).format('h:mm'))
         if (unixTime >= now) {
-          if (foundIndex === -1) foundIndex = index - 1
+          if (foundIndex === -1) {
+            foundIndex = index - 1
+          }
         }
-
-
         return {
           'time': moment(obj.DepartingTime).tz(timezone).format('h:mm'),
           'index': index,
@@ -287,8 +285,8 @@ function writeSchedules () {
         }
       ]
     }
-
     return remainingTimes.slice(foundIndex, Math.min(foundIndex + 3, remainingTimes.length - 1))
+    // return remainingTimes.slice(0, Math.min(4, remainingTimes.length - 1))
   }
 
   for (let routeIndex in _this.settings.default.appInfo.routes) {

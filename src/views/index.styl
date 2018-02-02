@@ -31,9 +31,7 @@ body
   font-size 1rem
 
 // main sections
-div
-  border 0px solid red
-div.wrapper
+.wrapper
   position relative
   height $main-height
   width $main-width
@@ -43,55 +41,56 @@ div.wrapper
   display flex
   flex-direction column
   justify-content center
-  align-items center
+  align-items middle
   text-align center
-  div.overlay
-    position: absolute
-    top 73px
-    left 0
-    right 0
-    font-weight 300
-    text-align center
-    color $color-white
-  div.id-wrapper
-    position: absolute
-    right 11px
-    top 106px
-    div.poweredby
-      font-size: 10px
-      font-weight: 300
-    div.oakos
-      text-align center
-      display inline-block
-      margin-bottom: 5px
-      img
-        margin 0 auto
-        opacity: 1
+  
 
-  div.header
+  .header
     text-align center
     width 100%
-    font-size 30px
-    font-weight 400
-    div.title
-      font-size 131px
-      line-height 1em
-      color $color-medium
-      margin-top: -21px;
-      margin-bottom: -3px;
-      letter-spacing: 0.05em;
-    div.date{
+
+    .date
       color $color-oak
       font-weight 300
       background-color $color-medium
       padding 5px
       font-size 21px
       margin-bottom: 13px;
-    }
-  div.route
+    .header-wrapper
+      
+      position relative
+      .title
+        font-size 154px
+        font-weight 400
+        line-height 154px
+        color $color-medium
+        letter-spacing: 0.05em;
+        margin-top -19px
+      .overlay
+        position: absolute
+        top 81px
+        left 0
+        right 0
+        font-weight 300
+        font-size 36px
+        text-align center
+        color $color-white
+      .id-wrapper
+        position: absolute
+        right -15px
+        top 122px
+        .poweredby
+          font-size: 12px
+          font-weight: 300
+        .oakos
+          text-align center
+          img
+            margin 0 auto
+            opacity: 1
+  .route
     width 100%
     flex-grow 1
-    div.terminal
+    .terminal
       color $color-light
       font-weight 300
       font-size 48px
@@ -100,46 +99,50 @@ div.wrapper
       background-color $color-medium-dark
       border-top .5px solid #f18571
       padding 5px
-    div.destination
+    .destination
       color $color-white
       font-weight 300
       font-size 30px
       background-color $color-medium
       padding 5px
-    div.times
+    .times
       display flex
       justify-content center
-      align-items: center 
+      align-items top  
       height 100%
       padding-top 20px
-      div.boat
+      .boat
         flex 1
         display flex
         flex-direction column
         height 100%
         color $color-medium
-        div.boat-wrapper
+        .boat-wrapper
           color alpha($color-oak, .50)
-          div.time
+          .boat-time
             font-size 55px
             font-weight 600
-          div.status
+          .boat-delayed
             font-size 20px
-          div.boat-eta,
-          div.status
+          .boat-eta,
+          .boat-delayed
             display none
           &.current
-            div.time,
-            div.boat-name,
-            div.boat-eta
-                color $color-white
-                display block
-            div.time
-              font-size 70px
+           .boat-time,
+           .boat-name,
+           .boat-eta
+              color $color-white
+              display block
+            .boat-time
               color $color-oak
-            div.status
+            .boat-delayed
               display block
               color $color-oak
+            .boat-status
+              color $color-oak
+
+
+
               
             
 
