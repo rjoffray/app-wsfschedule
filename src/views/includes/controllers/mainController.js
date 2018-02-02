@@ -13,6 +13,11 @@
       $scope.appName = incoming.data.default.appInfo.appName
       $scope.today = incoming.data.default.appInfo.currentTime
     })
+    $window.oak.on('loadStatus', function(incoming){
+      
+      $scope.boatStatus = incoming.data
+      console.log("boat status: ", $scope.boatStatus)
+    })
 
     $interval(function() {
      //nothing has to happen here but dont take it out

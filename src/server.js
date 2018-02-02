@@ -166,7 +166,26 @@ function writeSchedules () {
   let _this = this
   _this.settings = require(settingsPath + '.json')
   _this.routesLoaded = 0
-
+  _this.sendStatusData = function(){
+      let vesselWatchUrl = "http://www.wsdot.com/ferries/vesselwatch/Vessels.ashx"
+      let vesselStatus = {}
+      request(vesselWatchUrl, function (error, response, body){
+          let data = JSON.parse(body)
+          data.vessellist.map(function(obj){
+            vesselStatus[obj.vesselID] = {
+              'name': obj.name,
+              'leftdock': obj.leftdock,
+              'eta': obj.eta,
+              'departDelayed': obj.departDelayed,
+            }
+          })
+          window.send('loadStatus', {
+            'data': vesselStatus
+          })
+      })
+      
+      
+  }
   _this.getSchedule = function (routeIndex, fileName, departingTerminalId, arrivingTerminalId, onlyRemaingTimes) {
     let cacheFlushUrl = util.format('%s/%s?apiaccesscode=%s', apiRoot, 'cacheflushdate', apiAccessCode)
     let flushDate = null
@@ -220,6 +239,8 @@ function writeSchedules () {
       window.send('loadSettings', {
         'data': _this.settings
       })
+      
+     
       /**
        * We are using a timeout to avoid using setInterval
        * so we can repeat
@@ -241,10 +262,12 @@ function writeSchedules () {
           if (foundIndex === -1) foundIndex = index - 1
         }
 
+
         return {
           'time': moment(obj.DepartingTime).tz(timezone).format('h:mm'),
-          'status': '',
-          'index': index
+          'index': index,
+          'vesselId': obj.VesselID,
+          'vesselName': obj.VesselName
 
         }
       })
@@ -272,4 +295,5 @@ function writeSchedules () {
     let route = _this.settings.default.appInfo.routes[routeIndex]
     _this.getSchedule(routeIndex, route.fileName, route.departingTerminalId, route.arrivingTerminalId, route.onlyRemainingTimes)
   }
+  _this.sendStatusData()
 }

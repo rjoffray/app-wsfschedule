@@ -81,7 +81,7 @@ div.wrapper
       margin-bottom: -3px;
       letter-spacing: 0.05em;
     div.date{
-      color $color-light
+      color $color-oak
       font-weight 300
       background-color $color-medium
       padding 5px
@@ -92,7 +92,7 @@ div.wrapper
     width 100%
     flex-grow 1
     div.terminal
-      color $color-medium
+      color $color-light
       font-weight 300
       font-size 48px
       line-height 1em
@@ -101,7 +101,7 @@ div.wrapper
       border-top .5px solid #f18571
       padding 5px
     div.destination
-      color $color-light
+      color $color-white
       font-weight 300
       font-size 30px
       background-color $color-medium
@@ -117,16 +117,30 @@ div.wrapper
         display flex
         flex-direction column
         height 100%
-        div.time
-          font-size 55px
-          font-weight 600
-          color $color-medium
+        color $color-medium
+        div.boat-wrapper
+          color alpha($color-oak, .50)
+          div.time
+            font-size 55px
+            font-weight 600
+          div.status
+            font-size 20px
+          div.boat-eta,
+          div.status
+            display none
           &.current
-            color $color-white
-            font-size 70px
-        div.status
-          color $color-oak
-          font-size 20px
+            div.time,
+            div.boat-name,
+            div.boat-eta
+                color $color-white
+                display block
+            div.time
+              font-size 70px
+              color $color-oak
+            div.status
+              display block
+              color $color-oak
+              
             
 
 

@@ -20,7 +20,8 @@ html(ng-app='appWsfschedule')
         div.destination(ng-bind-html="route.destination")
         div.times
           div.boat(ng-repeat="boat in route.times")
-            div.time(ng-class="{'current': ($index == 1 && boat.index != 1) || ($index == 0 && boat.index == 0) }")
-              div(ng-bind-html='boat.time')
-            div.status(ng-bind-html="boat.status || '&nbsp;'" )
-    
+            div.boat-wrapper(ng-class="{'current': ($index == 1 && boat.index != 1) || ($index == 0 && boat.index == 0) }")
+              div.time(ng-bind-html='boat.time')
+              div.boat-name(ng-bind-html='boat.vesselName')
+              div.boat-eta(ng-bind-html='"eta: " + boatStatus[boat.vesselId].eta')
+              div.status(ng-bind-html="boatStatus[boat.vesselId].departDelayed == 'Y'?'Delayed':'' || '&nbsp;'" )
