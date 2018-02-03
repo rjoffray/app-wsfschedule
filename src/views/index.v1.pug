@@ -1,0 +1,28 @@
+doctype html
+html(ng-app='appWsfschedule')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0')
+    link(href='/helvetica.css', rel='stylesheet', type='text/css')
+    link(href='/index.css', rel='stylesheet', type='text/css')
+  body(ng-controller="mainController")
+    .wrapper
+      .header
+        .header-wrapper
+          .date(ng-bind-html="today")
+          .overlay {{appName}}
+          .id-wrapper
+            .poweredby Powered by
+            .oakos
+              img(src='img/logo_oakos.svg' width='23%')
+          .title WSF
+      .route(ng-repeat="route in routes")
+        .terminal(ng-bind-html="route.terminal")
+        .destination(ng-bind-html="route.destination")
+        .times
+          .boat(ng-repeat="boat in route.times")
+            .boat-wrapper(ng-class="{'current': ($index == 1 && boat.index != 1) || ($index == 0 && boat.index == 0)  }")
+              .boat-time(ng-bind-html='boat.time')
+              .boat-name(ng-bind-html='boat.vesselName')
+              .boat-delayed(ng-bind-html="boatStatus[boat.vesselId].departDelayed" )
+              .boat-status(ng-bind='boat.status' ng-if='boat.status')

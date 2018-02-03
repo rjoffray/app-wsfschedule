@@ -142,6 +142,10 @@ function loadWindow () {
     if (dev) {
       window.debug()
     }
+    let settings = require(settingsPath + '.json')
+    window.send('loadSettings', {
+      'data': settings
+    })
     writeSchedules()
   })
   .on('log.*', function (props) {
@@ -171,12 +175,7 @@ function writeSchedules () {
     let vesselStatus = {}
     request({url: vesselWatchUrl, json: true}, function (error, response, body) {
       body.vessellist.map(function (obj) {
-        vesselStatus[obj.vesselID] = {
-          'name': obj.name,
-          'leftdock': obj.leftdock,
-          'eta': obj.eta === 'Calculating' ? '' : obj.eta,
-          'departDelayed': obj.departDelayed
-        }
+        vesselStatus[obj.vesselID] = obj
       })
       if (error) {
         logger.error({
@@ -204,11 +203,29 @@ function writeSchedules () {
         flushDate = moment(JSON.parse(body)).tz(timezone).unix().valueOf()
       }
       let destinationUrl = join(publicPath, 'data', fileName)
+
+      /** 
+       * We need to use the cache copy of the data between midnight
+       * and 3 am
+       * If it is 3 am we will reload everything
+       */
+      let useOnlyCache = false,
+          format = 'hh:mm:ss',
+          beforeTime = moment('00:00:00', format),
+          afterTime = moment('03:00:00', format),
+          nowHour =  moment()
+      if (nowHour.isBetween(beforeTime, afterTime)) {
+        useOnlyCache = true
+      } else {
+        if (nowHour.format('hh') === '03') {
+          reloadIt('had to reload to get new schedule')
+        }
+      }
       /**
        * If the new flush date is greater that our last cache and there is no
        * network error we will need to go get a new copy of the data
        */
-      if (flushDate > cacheDate && !error) {
+      if (flushDate > cacheDate && !error || useOnlyCache) {
         let apiUrl = util.format('%s/%s/%s/%s/%s?apiaccesscode=%s', apiRoot, 'scheduletoday', departingTerminalId, arrivingTerminalId, onlyRemaingTimes, apiAccessCode)
         let fileStream = fs.createWriteStream(destinationUrl)
         request.get(apiUrl).pipe(fileStream)
@@ -220,6 +237,9 @@ function writeSchedules () {
           _this.sendData(routeIndex, destinationUrl, err)
         })
       } else {
+        logger.debug({
+          msg: 'Reading cache: ' + fileName
+        })
         _this.sendData(routeIndex, destinationUrl)
       }
     })
@@ -231,7 +251,8 @@ function writeSchedules () {
       _this.settings.default.appInfo.routes[routeIndex].times = newTimes
     }
     if (_this.settings.default.appInfo.routes.length === _this.routesLoaded) {
-      _this.settings.default.appInfo.currentTime = moment().tz(timezone).format('LLLL')
+      _this.settings.default.appInfo.currentTime = moment().tz(timezone).toDate()
+      
       window.send('loadSettings', {
         'data': _this.settings
       })
@@ -262,7 +283,7 @@ function writeSchedules () {
           }
         }
         return {
-          'time': moment(obj.DepartingTime).tz(timezone).format('h:mm'),
+          'time': moment(obj.DepartingTime).tz(timezone).format('h:mm a'),
           'index': index,
           'vesselId': obj.VesselID,
           'vesselName': obj.VesselName
@@ -285,7 +306,7 @@ function writeSchedules () {
         }
       ]
     }
-    return remainingTimes.slice(foundIndex, Math.min(foundIndex + 3, remainingTimes.length - 1))
+    return remainingTimes.slice(foundIndex, Math.min(foundIndex + 5, remainingTimes.length - 1))
     // return remainingTimes.slice(0, Math.min(4, remainingTimes.length - 1))
   }
 

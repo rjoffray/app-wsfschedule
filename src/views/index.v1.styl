@@ -1,0 +1,150 @@
+@import "includes/vars.styl"
+@import "includes/font.styl"
+
+
+*
+  display block
+  box-sizing border-box
+  transform translate3d(0, 0, 0)
+  -webkit-transform-style preserve-3d
+  -webkit-backface-visibility hidden
+  -webkit-font-smoothing subpixel-antialiased
+  user-select none !important
+  touch-action none !important
+  -webkit-tap-highlight-color rgba(255, 255, 255, 0) !important
+
+body, html
+  color $main-font-color
+  background-color $color-dark
+  height 100%
+  width 100%
+  margin 0
+  padding 0
+  overflow hidden
+
+html
+  font-size $main-size
+  line-height 1.15
+  -webkit-text-size-adjust 100%
+
+body
+  font-size 1rem
+
+// main sections
+.wrapper
+  position relative
+  height $main-height
+  width $main-width
+  margin 0
+  padding 0
+  border 0px solid $main-background
+  display flex
+  flex-direction column
+  justify-content center
+  align-items middle
+  text-align center
+  
+
+  .header
+    text-align center
+    width 100%
+
+    .date
+      color $color-oak
+      font-weight 300
+      background-color $color-medium
+      padding 5px
+      font-size 21px
+      margin-bottom: 13px;
+    .header-wrapper
+      
+      position relative
+      .title
+        font-size 154px
+        font-weight 400
+        line-height 154px
+        color $color-medium
+        letter-spacing: 0.05em;
+        margin-top -19px
+      .overlay
+        position: absolute
+        top 81px
+        left 0
+        right 0
+        font-weight 300
+        font-size 36px
+        text-align center
+        color $color-white
+      .id-wrapper
+        position: absolute
+        right -15px
+        top 122px
+        .poweredby
+          font-size: 12px
+          font-weight: 300
+        .oakos
+          text-align center
+          img
+            margin 0 auto
+            opacity: 1
+  .route
+    width 100%
+    flex-grow 1
+    .terminal
+      color $color-light
+      font-weight 300
+      font-size 48px
+      line-height 1em
+      text-transform uppercase
+      background-color $color-medium-dark
+      border-top .5px solid #f18571
+      padding 5px
+    .destination
+      color $color-white
+      font-weight 300
+      font-size 30px
+      background-color $color-medium
+      padding 5px
+    .times
+      display flex
+      justify-content center
+      align-items top  
+      height 100%
+      padding-top 20px
+      .boat
+        flex 1
+        display flex
+        flex-direction column
+        height 100%
+        color $color-medium
+        .boat-wrapper
+          color alpha($color-oak, .50)
+          .boat-time
+            font-size 55px
+            font-weight 600
+          .boat-delayed
+            font-size 20px
+          .boat-eta,
+          .boat-delayed
+            display none
+          &.current
+           .boat-time,
+           .boat-name,
+           .boat-eta
+              color $color-white
+              display block
+            .boat-time
+              color $color-oak
+            .boat-delayed
+              display block
+              color $color-oak
+            .boat-status
+              color $color-oak
+
+
+
+              
+            
+
+
+

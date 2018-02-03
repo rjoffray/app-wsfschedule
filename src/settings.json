@@ -4,13 +4,14 @@
       "title": "Burton Coffee Stand",
       "lat": "47.389459",
       "lon": "-122.466070",
-      "appName": "Vashon Ferry Schedules",
+      "appName": "Vashon",
+      "appSubTitle": "Ferry Schedules",
       "curentTime": "",
       "routes": [{
           "departingTerminalId": "22",
           "arrivingTerminalId": "9",
           "fileName": "faultleroy.json",
-          "terminal": "North Terminal",
+          "terminal": "North",
           "destination": "Fauntleroy (West Seattle)",
           "onlyRemainingTimes": "false",
           "times": [
@@ -32,7 +33,7 @@
           "departingTerminalId": "22",
           "arrivingTerminalId": "20",
           "fileName": "southworth.json",
-          "terminal": "North Terminal",
+          "terminal": "North",
           "destination": "Southworth (Kitsap Peninsula)",
           "onlyRemainingTimes": "false",
           "times": [
@@ -54,7 +55,7 @@
           "departingTerminalId": "21",
           "arrivingTerminalId": "16",
           "fileName": "tacoma.json",
-          "terminal": "South Terminal",
+          "terminal": "South",
           "destination": "Point Defiance (Tacoma)",
           "onlyRemainingTimes": "false",
           "times": [

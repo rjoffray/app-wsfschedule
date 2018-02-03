@@ -43,108 +43,201 @@ body
   justify-content center
   align-items middle
   text-align center
-  
-
-  .header
-    text-align center
-    width 100%
-
-    .date
-      color $color-oak
-      font-weight 300
-      background-color $color-medium
-      padding 5px
-      font-size 21px
-      margin-bottom: 13px;
-    .header-wrapper
-      
-      position relative
-      .title
-        font-size 154px
-        font-weight 400
-        line-height 154px
-        color $color-medium
-        letter-spacing: 0.05em;
-        margin-top -19px
-      .overlay
-        position: absolute
-        top 81px
-        left 0
-        right 0
+  .banner
+    display flex
+    justify-content space-between
+    align-items center
+    padding 0 $padding-right 0 $padding-left
+    background-color $color-medium-dark
+    height 34px
+    border-bottom .5px solid $color-medium
+    .title
+      color $color-white
+      font-size 26px
+      font-weight 600
+    .id-wrapper
+      display flex
+      justify-content flex-end
+      align-items flex-end
+      .poweredby
+        font-size 12px
         font-weight 300
+      .oakos
+        img
+          height 26px
+          width 75px
+  .info-box
+    display flex
+    align-items flex-start
+    justify-content space-between
+    padding 32px $padding-right 32px $padding-left
+    .title
+      text-align left
+      font-weight 600
+      .name
         font-size 36px
-        text-align center
-        color $color-white
-      .id-wrapper
-        position: absolute
-        right -15px
-        top 122px
-        .poweredby
-          font-size: 12px
-          font-weight: 300
-        .oakos
-          text-align center
-          img
-            margin 0 auto
-            opacity: 1
+        line-height 36px
+      .subtitle
+        font-size 16px
+        line-height 16px
+        padding-left 2px
+    .date
+      display flex
+      align-items center
+      text-transform uppercase
+      font-weight 600
+      padding 2px $padding-right 2px 2px
+      .day
+        font-size 52px
+        line-height 52px
+        font-weight 600
+        letter-spacing 3px
+        margin-right 6px
+      .date-time
+        text-align left
+        .date
+        border-bottom 1px solid $color-white
+        .time
+          margin-top 2px
   .route
     width 100%
     flex-grow 1
-    .terminal
-      color $color-light
-      font-weight 300
-      font-size 48px
-      line-height 1em
-      text-transform uppercase
+    .terminal-header
+      display flex
+      justify-content space-between
+      align-items flex-end
+      border-top .5px solid $color-oak
+      border-bottom .5px solid $color-oak
       background-color $color-medium-dark
-      border-top .5px solid #f18571
-      padding 5px
-    .destination
+      padding-left $padding-left
+      padding-right $padding-right + 4
+      padding-top 20px
+      padding-bottom 20px
+      font-weight 600
+      font-style italic
       color $color-white
-      font-weight 300
-      font-size 30px
-      background-color $color-medium
-      padding 5px
+      .terminal
+        display flex
+        justify-content flex-start
+        align-items flex-end
+        .direction
+          font-size 32px
+          line-height 32px
+          text-transform uppercase
+          margin-right 10px
+        .label
+          font-size 16px
+      .destination
+        color $color-white
+        font-weight 600
+        font-size 16px
+        display flex
+        justify-content flex-end
+        .label
+          color $color-oak
+          text-transform uppercase
+          margin-right 2px
     .times
       display flex
-      justify-content center
-      align-items top  
-      height 100%
-      padding-top 20px
-      .boat
-        flex 1
+      justify-content space-between
+      padding 15px $padding-right 15px $padding-left
+      .times-column-one
         display flex
         flex-direction column
-        height 100%
-        color $color-medium
-        .boat-wrapper
-          color alpha($color-oak, .50)
-          .boat-time
-            font-size 55px
-            font-weight 600
-          .boat-delayed
-            font-size 20px
-          .boat-eta,
-          .boat-delayed
-            display none
+        align-items flex-start
+        text-align left
+        color $color-oak 
+        width 50%
+        //border 1px solid red
+        .boat
+          opacity .5
+          width 80%
           &.current
-           .boat-time,
-           .boat-name,
-           .boat-eta
-              color $color-white
-              display block
-            .boat-time
-              color $color-oak
-            .boat-delayed
-              display block
-              color $color-oak
-            .boat-status
-              color $color-oak
+            opacity 1
+            border-top .5px solid $color-oak
+            margin-top 10px
+            padding-top 10px
+            .boat-wrapper
+              .boat-time-name
+                flex-direction column-reverse
+                font-weight 600
+                .boat-time
+                  align-items flex-end
+                  .hours-minutes
+                    font-size 57px
+                    line-height 57px
+                  .am-pm
+                    font-size 26px
+                    margin-bottom 3px
+                .boat-name
+                  font-size 26px
+                  align-self flex-start
+              .boat-delayed
+                &.ontime
+                  color $color-white
+                
+        .boat-wrapper
+            .boat-departed
+              .departed
+                display flex
+                justify-content space-between
+                align-items center
+                max-width 75%
+                .text
+                  color $color-oak
+                  text-transform uppercase
+                .image
+                  img
+                    width 40px
+                    height 13px
+            .boat-next
+                display flex
+                justify-content space-between
+                align-items center
+                max-width 75%
+                .text
+                  color $color-white
+                  margin-right 3px
+                  text-transform uppercase
+                .image
+                  img
+                    width 40px
+                    height 13px
+            .boat-time-name
+              display flex
+              .boat-time
+                display flex
+                text-transform uppercase
+                font-size 26px
+                line-height 26px
+                margin-right 5px
+              .boat-name
+                align-self flex-end
 
-
-
-              
-            
-
-
-
+      .times-column-two
+        width 50%
+        //border 1px solid red
+        text-align left
+        padding-top 28px
+        .boat-label-wrapper
+          border-bottom .5px solid @color-white
+          margin-bottom 10px
+          padding 4px
+          .boat-label
+            text-transform uppercase
+            font-weight 600
+        .boat
+          .boat-wrapper
+            .boat-time-name
+              display flex
+              align-items flex-end
+              font-weight 600
+              padding-bottom 10px
+              .boat-time
+                text-transform uppercase
+                margin-right 10px
+                font-weight 400
+                font-size 1.2em
+                min-width 80px
+                text-align right
+          

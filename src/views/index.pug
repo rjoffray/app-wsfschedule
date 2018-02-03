@@ -7,23 +7,52 @@ html(ng-app='appWsfschedule')
     link(href='/index.css', rel='stylesheet', type='text/css')
   body(ng-controller="mainController")
     .wrapper
-      .header
-        .header-wrapper
-          .date(ng-bind-html="today")
-          .overlay {{appName}}
-          .id-wrapper
+      .banner
+        .title WSF
+        .id-wrapper
             .poweredby Powered by
             .oakos
-              img(src='img/logo_oakos.svg' width='23%')
-          .title WSF
+              img(src='img/logo_oakos.svg')
+      .info-box
+        .title 
+          .name {{appName}}
+          .subtitle {{appSubTitle}}
+        .date
+          .day(ng-bind-html='today | date:"EEE"')
+          .date-time
+            .date {{today | date:"MMM d"}}
+            .time(ng-bind-html='today | date:"h:mm a"')
       .route(ng-repeat="route in routes")
-        .terminal(ng-bind-html="route.terminal")
-        .destination(ng-bind-html="route.destination")
+        .terminal-header
+          .terminal
+            .direction(ng-bind-html="route.terminal")
+            .label Terminal
+          .destination
+            .label To&colon;&nbsp;
+            .text(ng-bind-html="route.destination")
         .times
-          .boat(ng-repeat="boat in route.times")
-            .boat-wrapper(ng-class="{'current': ($index == 1 && boat.index != 1) || ($index == 0 && boat.index == 0)  }")
-              .boat-time(ng-bind-html='boat.time')
-              .boat-name(ng-bind-html='boat.vesselName')
-              .boat-eta(ng-bind-html='"eta: " + boatStatus[boat.vesselId].eta ', ng-if='boatStatus[boat.vesselId].eta')
-              .boat-delayed(ng-bind-html="boatStatus[boat.vesselId].departDelayed || '&nbsp;'" )
-              .boat-status(ng-bind='boat.status' ng-if='boat.status')
+          .times-column-one
+            .boat(ng-repeat="boat in route.times" ng-if="$index < 2" ng-class="{'current': ($index == 1 && boat.index != 1) || ($index == 0 && boat.index == 0)  }")
+              .boat-wrapper
+                .boat-departed(ng-if='$index == 0')
+                  .departed
+                    .text departed
+                    .image
+                      img(src='img/arrow-right.svg')
+                .boat-next(ng-if='$index == 1')
+                  .text Next Ferry
+                  .image
+                    img(src='img/arrow-left.svg')
+                .boat-time-name
+                  .boat-time(ng-bind-html='splitTime(boat.time)')
+                  .boat-name(ng-bind-html='boat.vesselName')
+                .boat-delayed(ng-class="{'ontime':boatStatus[boat.vesselId].departDelayed != 'Y'}", ng-bind-html="boatStatus[boat.vesselId].departDelayed == 'Y'?'(Delayed)':'(On Time)'", ng-if='$index == 1' )
+                .boat-status(ng-bind='boat.status' ng-if='boat.status')
+          .times-column-two
+            .boat-label-wrapper
+              .boat-label Upcoming
+            .boat(ng-repeat='boat in route.times', ng-if='$index >= 2')
+              .boat-wrapper
+                .boat-time-name
+                  .boat-time(ng-bind-html='boat.time')
+                  .boat-name(ng-bind-html='boat.vesselName')
