@@ -32,24 +32,24 @@ html(ng-app='appWsfschedule')
             .text(ng-bind-html="route.destination")
         .times
           .times-column-one
-            .boat(ng-repeat="boat in route.times" ng-if="$index < 2" ng-class="{'current': ($index == 1 && boat.index != 1) || ($index == 0 && boat.index == 0)  }")
+            .boat(ng-repeat="boat in route.times" ng-if="$index < 2" ng-class="isBoatGone(boat.timestamp, boat.index)?'departed':'current'")
               .boat-wrapper
-                .boat-departed(ng-if='$index == 0')
+                .boat-departed(ng-if='$index == 0 && boat.time && boat.index > 1')
                   .departed
                     .text departed
                     .image
                       img(src='img/arrow-right.svg')
-                .boat-next(ng-if='$index == 1')
+                .boat-next(ng-if='boat.time && !isBoatGone(boat.timestamp, boat.index)')
                   .text Next Ferry
                   .image
                     img(src='img/arrow-left.svg')
                 .boat-time-name
                   .boat-time(ng-bind-html='splitTime(boat.time)')
                   .boat-name(ng-bind-html='boat.vesselName')
-                .boat-delayed(ng-class="{'ontime':boatStatus[boat.vesselId].departDelayed != 'Y'}", ng-bind-html="boatStatus[boat.vesselId].departDelayed == 'Y'?'(Delayed)':'(On Time)'", ng-if='$index == 1' )
+                .boat-delayed(ng-class="{'ontime':boatStatus[boat.vesselId].departDelayed != 'Y'}", ng-bind-html="boatStatus[boat.vesselId].departDelayed == 'Y'?'(Delayed)':'(On Time)'", ng-if='$index == 1 && !boat.status' )
                 .boat-status(ng-bind='boat.status' ng-if='boat.status')
           .times-column-two
-            .boat-label-wrapper
+            .boat-label-wrapper(ng-if='route.times.length > 1')
               .boat-label Upcoming
             .boat(ng-repeat='boat in route.times', ng-if='$index >= 2')
               .boat-wrapper

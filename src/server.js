@@ -18,7 +18,7 @@ const _setTimeout = require('safe-timers').setTimeout
 const apiRoot = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest'
 const apiAccessCode = 'beae0283-3493-4760-9997-04b1c32a23e2'
 const timezone = 'America/Los_Angeles'
-
+let timer = null
 // this prevents window dialog instances from popping up when something throws. This gets logged instead of blowing up in the UI.
 oak.catchErrors()
 
@@ -217,16 +217,26 @@ function writeSchedules () {
       if (nowHour.isBetween(beforeTime, afterTime)) {
         useOnlyCache = true
       } else {
-        if (nowHour.format('HH:mm') === '03:00') {
-          window.send('reloadPage', {})
+        if (nowHour.format('mm') === '00') {
+          useOnlyCache = false
+         
+          _setTimeout(function (msg) {
+            flushDate = moment().add(1,"m").tz(timezone).unix().valueOf()
+            logger.debug({
+              msg: 'Cache Flushed',
+              flushDate
+            })
+          }, 60000)
+          
         }
       }
       /**
        * If the new flush date is greater that our last cache and there is no
        * network error we will need to go get a new copy of the data
        */
-      if (flushDate > cacheDate && !error || useOnlyCache) {
-        let apiUrl = util.format('%s/%s/%s/%s/%s?apiaccesscode=%s', apiRoot, 'scheduletoday', departingTerminalId, arrivingTerminalId, onlyRemaingTimes, apiAccessCode)
+      if (flushDate > cacheDate && !error && !useOnlyCache) {
+        let today = moment().tz(timezone).format('YYYY-MM-DD')
+        let apiUrl = util.format('%s/%s/%s/%s/%s?apiaccesscode=%s', apiRoot, 'schedule', today, departingTerminalId, arrivingTerminalId, apiAccessCode)
         let fileStream = fs.createWriteStream(destinationUrl)
         request.get(apiUrl).pipe(fileStream)
         fileStream.on('finish', function (err) {
@@ -262,7 +272,8 @@ function writeSchedules () {
        * We are using a timeout to avoid using setInterval
        * so we can repeat
        */
-      _setTimeout(function (msg) {
+      if(timer) timer.clear()
+      timer = _setTimeout(function (msg) {
         writeSchedules()
       }, 60000)
     }
@@ -282,7 +293,9 @@ function writeSchedules () {
         }
         return {
           'time': moment(obj.DepartingTime).tz(timezone).format('h:mm a'),
+          'timestamp': obj.DepartingTime,
           'index': index,
+          'timesLength': fullSchedule.TerminalCombos[0].Times.length,
           'vesselId': obj.VesselID,
           'vesselName': obj.VesselName
 
@@ -291,20 +304,12 @@ function writeSchedules () {
     if (foundIndex === -1) {
       return [
         {
-          'time': '&nbsp;',
-          'status': ''
-        },
-        {
-          'time': '',
+          'time': null,
           'status': 'No More Boats Today'
-        },
-        {
-          'time': '&nbsp;',
-          'status': ' '
         }
       ]
     }
-    return remainingTimes.slice(foundIndex, Math.min(foundIndex + 5, remainingTimes.length - 1))
+    return remainingTimes.slice(foundIndex , Math.min(foundIndex + 6, remainingTimes.length - 1))
     // return remainingTimes.slice(0, Math.min(4, remainingTimes.length - 1))
   }
 
