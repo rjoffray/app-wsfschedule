@@ -12,7 +12,8 @@
       $scope.routes = incoming.data.default.appInfo.routes
       $scope.appName = incoming.data.default.appInfo.appName
       $scope.appSubTitle = incoming.data.default.appInfo.appSubTitle
-      $scope.today = incoming.data.default.appInfo.currentTime
+      $scope.today = moment().tz('America/Los_Angeles');
+      console.log($scope.today)
     })
     $window.oak.on('loadStatus', function (incoming) {
       $scope.boatStatus = incoming.data

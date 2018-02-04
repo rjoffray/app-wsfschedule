@@ -18,10 +18,10 @@ html(ng-app='appWsfschedule')
           .name {{appName}}
           .subtitle {{appSubTitle}}
         .date-time
-          .time(ng-bind-html='today | date:"h:mm a"')
+          .time(ng-bind-html='today.format("h:mm a")')
           .date-day
-            .day {{today | date:"EEE"}}
-            .date(ng-bind-html='today | date:"MMM d"')
+            .day {{today.format("ddd")}}
+            .date(ng-bind-html='today.format("MMM D")')
       .route(ng-repeat="route in routes")
         .terminal-header
           .terminal

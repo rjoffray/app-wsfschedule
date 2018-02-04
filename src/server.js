@@ -129,7 +129,7 @@ function loadWindow () {
       },
       {
         name: 'moment',
-        path: join(__dirname, '..', 'node_modules', 'moment')
+        path: join(__dirname, '..', 'node_modules', 'moment-timezone')
       },
       join(__dirname, '..', 'node_modules', 'angular'),
       join(__dirname, '..', 'node_modules', 'angular-animate'),
@@ -252,9 +252,7 @@ function writeSchedules () {
       _this.settings.default.appInfo.routes[routeIndex].times = newTimes
     }
     if (_this.settings.default.appInfo.routes.length === _this.routesLoaded) {
-      _this.settings.default.appInfo.currentTime = moment().tz(timezone).toDate()
-      
-      window.send('loadSettings', {
+        window.send('loadSettings', {
         'data': _this.settings
       })
       logger.debug({
