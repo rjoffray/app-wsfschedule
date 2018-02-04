@@ -12,7 +12,7 @@
       $scope.routes = incoming.data.default.appInfo.routes
       $scope.appName = incoming.data.default.appInfo.appName
       $scope.appSubTitle = incoming.data.default.appInfo.appSubTitle
-      $scope.today = moment().tz('America/Los_Angeles');
+      $scope.today = moment().tz('America/Los_Angeles')
       console.log($scope.today)
     })
     $window.oak.on('loadStatus', function (incoming) {
@@ -28,9 +28,9 @@
      // nothing has to happen here but dont take it out
     }, 100)
 
-    $scope.splitTime = function(t) {
+    $scope.splitTime = function (t) {
       var s = t.split(' ')
-      return '<span class="hours-minutes">'+ s[0] +'</span>' + '&nbsp;<span class="am-pm">'+ s[1] +'</span>' 
+      return '<span class="hours-minutes">' + s[0] + '</span>' + '&nbsp;<span class="am-pm">' + s[1] + '</span>'
     }
 
     oak.ready()

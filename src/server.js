@@ -204,20 +204,19 @@ function writeSchedules () {
       }
       let destinationUrl = join(publicPath, 'data', fileName)
 
-      /** 
+      /**
        * We need to use the cache copy of the data between midnight
        * and 3 am
        * If it is 3 am we will reload everything
        */
       let useOnlyCache = false,
-          format = 'HH:mm:ss',
-          beforeTime = moment('00:00:00', format),
-          afterTime = moment('03:00:00', format),
-          nowHour =  moment().tz(timezone)
+        format = 'HH:mm:ss',
+        beforeTime = moment('00:00:00', format),
+        afterTime = moment('03:00:00', format),
+        nowHour = moment().tz(timezone)
       if (nowHour.isBetween(beforeTime, afterTime)) {
         useOnlyCache = true
       } else {
-
         if (nowHour.format('HH:mm') === '03:00') {
           window.send('reloadPage', {})
         }
@@ -252,7 +251,7 @@ function writeSchedules () {
       _this.settings.default.appInfo.routes[routeIndex].times = newTimes
     }
     if (_this.settings.default.appInfo.routes.length === _this.routesLoaded) {
-        window.send('loadSettings', {
+      window.send('loadSettings', {
         'data': _this.settings
       })
       logger.debug({
