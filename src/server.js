@@ -210,15 +210,16 @@ function writeSchedules () {
        * If it is 3 am we will reload everything
        */
       let useOnlyCache = false,
-          format = 'hh:mm:ss',
+          format = 'HH:mm:ss',
           beforeTime = moment('00:00:00', format),
           afterTime = moment('03:00:00', format),
-          nowHour =  moment()
+          nowHour =  moment().tz(timezone)
       if (nowHour.isBetween(beforeTime, afterTime)) {
         useOnlyCache = true
       } else {
-        if (nowHour.format('hh') === '03') {
-          reloadIt('had to reload to get new schedule')
+
+        if (nowHour.format('HH:mm') === '03:00') {
+          window.send('reloadPage', {})
         }
       }
       /**

@@ -18,6 +18,10 @@
       $scope.boatStatus = incoming.data
       console.log('boat status: ', $scope.boatStatus)
     })
+    $window.oak.on('reloadPage', function () {
+      console.log('reloading page: ')
+      $window.oak.reload()
+    })
 
     $interval(function () {
      // nothing has to happen here but dont take it out

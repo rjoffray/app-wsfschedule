@@ -10,18 +10,18 @@ html(ng-app='appWsfschedule')
       .banner
         .title WSF
         .id-wrapper
-            .poweredby Powered by
+            .poweredby www.oaklabs.is
             .oakos
               img(src='img/logo_oakos.svg')
       .info-box
         .title 
           .name {{appName}}
           .subtitle {{appSubTitle}}
-        .date
-          .day(ng-bind-html='today | date:"EEE"')
-          .date-time
-            .date {{today | date:"MMM d"}}
-            .time(ng-bind-html='today | date:"h:mm a"')
+        .date-time
+          .time(ng-bind-html='today | date:"h:mm a"')
+          .date-day
+            .day {{today | date:"EEE"}}
+            .date(ng-bind-html='today | date:"MMM d"')
       .route(ng-repeat="route in routes")
         .terminal-header
           .terminal
