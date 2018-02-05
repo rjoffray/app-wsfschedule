@@ -2,6 +2,7 @@
 @import "includes/font.styl"
 
 
+
 *
   display block
   box-sizing border-box
@@ -28,7 +29,7 @@ html
   -webkit-text-size-adjust 100%
 
 body
-  font-size 1rem
+  font-size rem($base-size)
 
 // main sections
 .wrapper
@@ -37,7 +38,7 @@ body
   width $main-width
   margin 0
   padding 0
-  border 0px solid $main-background
+  border 0 solid $main-background
   display flex
   flex-direction column
   justify-content center
@@ -49,55 +50,55 @@ body
     align-items center
     padding 0 $padding-right 0 $padding-left
     background-color $color-medium-dark
-    height 34px
-    border-bottom .5px solid $color-medium
+    height rem(34)
+    border-bottom rem(.5) solid $color-medium
     .title
       color $color-white
-      font-size 26px
+      font-size rem(26)
       font-weight 600
     .id-wrapper
       display flex
       justify-content flex-end
       align-items flex-end
       .poweredby
-        font-size 12px
+        font-size rem(12)
         font-weight 300
       .oakos
         img
-          height 26px
-          width 75px
+          height rem(26)
+          width rem(75)
   .info-box
     display flex
     align-items flex-start
     justify-content space-between
-    padding 32px $padding-right 32px $padding-left
+    padding rem(32) $padding-right rem(32) $padding-left
     .title
       text-align left
       font-weight 600
       .name
-        font-size 36px
-        line-height 36px
+        font-size rem(36)
+        line-height rem(36)
       .subtitle
-        font-size 16px
-        line-height 16px
-        padding-left 2px
+        font-size rem(16)
+        line-height rem(16)
+        padding-left rem(2)
     .date-time
       display flex
       align-items center
       text-transform uppercase
       font-weight 600
-      padding 2px $padding-right 2px 2px
+      padding rem(2) $padding-right rem(2) rem(2)
       .time
-        font-size 45px
-        line-height 45px
+        font-size rem(45)
+        line-height rem(45)
         font-weight 600
-        margin-right 6px
+        margin-right rem(6)
       .date-day
         text-align left
         .day
-          border-bottom 1px solid $color-white
+          border-bottom right  solid $color-white
         .date
-          margin-top 2px
+          margin-top rem(2)
   .route
     width 100%
     flex-grow 1
@@ -105,13 +106,13 @@ body
       display flex
       justify-content space-between
       align-items flex-end
-      border-top .5px solid $color-oak
-      border-bottom .5px solid $color-oak
+      border-top rem(.5) solid $color-oak
+      border-bottom rem(.5) solid $color-oak
       background-color $color-medium-dark
       padding-left $padding-left
       padding-right $padding-right + 4
-      padding-top 20px
-      padding-bottom 20px
+      padding-top rem(20)
+      padding-bottom rem(20)
       font-weight 600
       font-style italic
       color $color-white
@@ -120,26 +121,26 @@ body
         justify-content flex-start
         align-items flex-end
         .direction
-          font-size 32px
-          line-height 32px
+          font-size rem(32)
+          line-height rem(32)
           text-transform uppercase
-          margin-right 10px
+          margin-right rem(10)
         .label
-          font-size 16px
+          font-size rem(16)
       .destination
         color $color-white
         font-weight 600
-        font-size 16px
+        font-size rem(16)
         display flex
         justify-content flex-end
         .label
           color $color-oak
           text-transform uppercase
-          margin-right 2px
+          margin-right rem(2)
     .times
       display flex
       justify-content space-between
-      padding 15px $padding-right 15px $padding-left
+      padding rem(15) $padding-right rem(15) $padding-left
       .times-column-one
         display flex
         flex-direction column
@@ -147,15 +148,14 @@ body
         text-align left
         color $color-oak 
         width 50%
-        //border 1px solid red
         .boat
           opacity .5
           width 80%
           &.current
             opacity 1
-            border-top .5px solid $color-oak
-            margin-top 10px
-            padding-top 10px
+            border-top rem(.5) solid $color-oak
+            margin-top rem(10)
+            padding-top rem(10)
             .boat-wrapper
               .boat-time-name
                 flex-direction column-reverse
@@ -163,13 +163,13 @@ body
                 .boat-time
                   align-items flex-end
                   .hours-minutes
-                    font-size 45px
-                    line-height 45px
+                    font-size rem(45)
+                    line-height rem(45)
                   .am-pm
-                    font-size 26px
-                    margin-bottom 3px
+                    font-size rem(26)
+                    margin-bottom rem(3)
                 .boat-name
-                  font-size 26px
+                  font-size rem(26)
                   align-self flex-start
               .boat-delayed
                 &.ontime
@@ -187,8 +187,8 @@ body
                   text-transform uppercase
                 .image
                   img
-                    width 40px
-                    height 13px
+                    width rem(40)
+                    height rem(13)
             .boat-next
                 display flex
                 justify-content space-between
@@ -196,32 +196,31 @@ body
                 max-width 75%
                 .text
                   color $color-white
-                  margin-right 3px
+                  margin-right rem(3)
                   text-transform uppercase
                 .image
                   img
-                    width 40px
-                    height 13px
+                    width rem(40)
+                    height rem(13)
             .boat-time-name
               display flex
               .boat-time
                 display flex
                 text-transform uppercase
-                font-size 26px
-                line-height 26px
-                margin-right 5px
+                font-size rem(26)
+                line-height rem(26)
+                margin-right rem(5)
               .boat-name
                 align-self flex-end
 
       .times-column-two
         width 50%
-        //border 1px solid red
         text-align left
-        padding-top 10px
+        padding-top rem(10)
         .boat-label-wrapper
-          border-bottom .5px solid @color-white
-          margin-bottom 10px
-          padding 4px
+          border-bottom rem(.5) solid @color-white
+          margin-bottom rem(10)
+          padding rem(4)
           .boat-label
             text-transform uppercase
             font-weight 600
@@ -231,12 +230,12 @@ body
               display flex
               align-items flex-end
               font-weight 600
-              padding-bottom 5px
+              padding-bottom rem(5)
               .boat-time
                 text-transform uppercase
-                margin-right 10px
+                margin-right rem(10)
                 font-weight 400
                 font-size 1.2em
-                min-width 80px
+                min-width rem(80)
                 text-align right
           

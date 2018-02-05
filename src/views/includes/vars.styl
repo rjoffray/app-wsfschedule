@@ -3,7 +3,11 @@
 $main-background ?= #000000
 $main-font-color ?= #ffffff
 
-$main-size ?= 16px
+$base-size ?= 16
+rem(target)
+  target / $base-size * 1rem
+
+$main-size ?= rem(16)
 $main-width ?= 100%
 $main-height ?= 100%
 
@@ -16,5 +20,5 @@ $color-light ?= alpha(#fff, .40)
 $color-white ?= alpha(#fff, .70)
 $color-oak ?= #f18571
 
-$padding-left ?= 32px
-$padding-right ?= 10px
+$padding-left ?= rem(32)
+$padding-right ?= rem(10)
