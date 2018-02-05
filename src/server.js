@@ -207,7 +207,7 @@ function writeSchedules () {
       /**
        * We need to use the cache copy of the data between midnight
        * and 3 am
-       * If it is 3 am we will reload everything
+       * If it is 3 am we will set a new flushDate to get new schedule
        */
       let useOnlyCache = false,
         format = 'HH:mm:ss',
@@ -217,11 +217,11 @@ function writeSchedules () {
       if (nowHour.isBetween(beforeTime, afterTime)) {
         useOnlyCache = true
       } else {
-        if (nowHour.format('mm') === '00') {
+        if (nowHour.format('HH:mm') === '03:00') {
           useOnlyCache = false
          
           _setTimeout(function (msg) {
-            flushDate = moment().add(1,"m").tz(timezone).unix().valueOf()
+            flushDate = moment().add(1,"minutes").tz(timezone).unix().valueOf()
             logger.debug({
               msg: 'Cache Flushed',
               flushDate
