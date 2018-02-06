@@ -211,23 +211,19 @@ function writeSchedules () {
        */
       let useOnlyCache = false,
         format = 'HH:mm:ss',
-        beforeTime = moment('00:00:00', format),
-        afterTime = moment('03:00:00', format),
+        beforeTime = moment('11:59:00', format),
+        afterTime = moment('02:59:00', format),
         nowHour = moment().tz(timezone)
       if (nowHour.isBetween(beforeTime, afterTime)) {
         useOnlyCache = true
       } else {
-        if (nowHour.format('HH:mm') === '03:00') {
+        /** we will flushDate every hour between 3am and 11:58pm */
+        if (nowHour.format('mm') === '58') {
           useOnlyCache = false
-         
-          _setTimeout(function (msg) {
-            flushDate = moment().add(1,"minutes").tz(timezone).unix().valueOf()
-            logger.debug({
-              msg: 'Cache Flushed',
-              flushDate
-            })
-          }, 60000)
-          
+          flushDate = moment().tz(timezone).unix().valueOf()
+          logger.debug({
+            msg: 'Cache flushed on the hour'
+          })
         }
       }
       /**
@@ -285,19 +281,25 @@ function writeSchedules () {
       function (obj, index) {
         let now = moment().tz(timezone).unix()
         let unixTime = moment(obj.DepartingTime).tz(timezone).unix()
-        // console.log(moment(obj.DepartingTime).format('h:mm'))
+        let className = 'departed'
+
         if (unixTime >= now) {
           if (foundIndex === -1) {
+            className = 'current'
             foundIndex = index - 1
+          } else {
+            className = 'upcoming'
           }
         }
+
         return {
           'time': moment(obj.DepartingTime).tz(timezone).format('h:mm a'),
           'timestamp': obj.DepartingTime,
           'index': index,
           'timesLength': fullSchedule.TerminalCombos[0].Times.length,
           'vesselId': obj.VesselID,
-          'vesselName': obj.VesselName
+          'vesselName': obj.VesselName,
+          'className': className
 
         }
       })
@@ -309,8 +311,10 @@ function writeSchedules () {
         }
       ]
     }
-    return remainingTimes.slice(foundIndex , Math.min(foundIndex + 6, remainingTimes.length - 1))
-    // return remainingTimes.slice(0, Math.min(4, remainingTimes.length - 1))
+
+    let groups = _.groupBy(remainingTimes.slice(foundIndex, Math.min(foundIndex + 6, remainingTimes.length)),'className')
+    return groups
+
   }
 
   for (let routeIndex in _this.settings.default.appInfo.routes) {

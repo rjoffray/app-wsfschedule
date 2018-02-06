@@ -1,9 +1,9 @@
-@import "includes/vars.styl"
-@import "includes/font.styl"
+@import 'includes/vars.styl'
+@import 'includes/font.styl'
 
 
 
-*
+* 
   display block
   box-sizing border-box
   transform translate3d(0, 0, 0)
@@ -14,7 +14,7 @@
   touch-action none !important
   -webkit-tap-highlight-color rgba(255, 255, 255, 0) !important
 
-body, html
+body, html 
   color $main-font-color
   background-color $color-dark
   height 100%
@@ -23,16 +23,16 @@ body, html
   padding 0
   overflow hidden
 
-html
+html 
   font-size $main-size
   line-height 1.15
   -webkit-text-size-adjust 100%
 
-body
+body 
   font-size rem($base-size)
 
 // main sections
-.wrapper
+.wrapper 
   position relative
   height $main-height
   width $main-width
@@ -44,7 +44,7 @@ body
   justify-content center
   align-items middle
   text-align center
-  .banner
+  .banner 
     display flex
     justify-content space-between
     align-items center
@@ -52,190 +52,197 @@ body
     background-color $color-medium-dark
     height rem(34)
     border-bottom rem(.5) solid $color-medium
-    .title
+    .title 
       color $color-white
       font-size rem(26)
       font-weight 600
-    .id-wrapper
+    .id-wrapper 
       display flex
       justify-content flex-end
       align-items flex-end
-      .poweredby
+      .poweredby 
         font-size rem(12)
         font-weight 300
-      .oakos
-        img
+      .oakos 
+        img 
           height rem(26)
           width rem(75)
-  .info-box
+  .info-box 
     display flex
     align-items flex-start
     justify-content space-between
     padding rem(32) $padding-right rem(32) $padding-left
-    .title
+    .title 
       text-align left
       font-weight 600
-      .name
+      .name 
         font-size rem(36)
-        line-height rem(36)
-      .subtitle
+        line-height rem(36)    
+     .subtitle 
         font-size rem(16)
         line-height rem(16)
         padding-left rem(2)
-    .date-time
+    .date-time 
       display flex
       align-items center
       text-transform uppercase
       font-weight 600
       padding rem(2) $padding-right rem(2) rem(2)
-      .time
+      .time 
         font-size rem(45)
         line-height rem(45)
         font-weight 600
         margin-right rem(6)
-      .date-day
+      .date-day 
         text-align left
-        .day
-          border-bottom right  solid $color-white
-        .date
+        .day 
+          border-bottom rem(1) solid $color-white
+        .date 
           margin-top rem(2)
-  .route
+  .route-wrapper
+    flex 1
     width 100%
-    flex-grow 1
-    .terminal-header
-      display flex
-      justify-content space-between
-      align-items flex-end
-      border-top rem(.5) solid $color-oak
-      border-bottom rem(.5) solid $color-oak
-      background-color $color-medium-dark
-      padding-left $padding-left
-      padding-right $padding-right + 4
-      padding-top rem(20)
-      padding-bottom rem(20)
-      font-weight 600
-      font-style italic
-      color $color-white
-      .terminal
+    display flex
+    flex-direction column
+    .route 
+      width 100%
+      flex 1
+      .terminal-header 
         display flex
-        justify-content flex-start
+        justify-content space-between
         align-items flex-end
-        .direction
-          font-size rem(32)
-          line-height rem(32)
-          text-transform uppercase
-          margin-right rem(10)
-        .label
-          font-size rem(16)
-      .destination
-        color $color-white
+        border-top rem(0.5) solid $color-oak
+        border-bottom rem(0.5) solid $color-oak
+        background-color $color-medium-dark
+        padding-left $padding-left
+        padding-right $padding-right + rem(4)
+        padding-top rem(20)
+        padding-bottom rem(20)
         font-weight 600
-        font-size rem(16)
+        font-style italic
+        color $color-white
+        .terminal 
+          display flex
+          justify-content flex-start
+          align-items flex-end
+          .direction 
+            font-size rem(32)
+            line-height rem(32)
+            text-transform uppercase
+            margin-right rem(10)
+          .label 
+            font-size rem(16)
+        .destination 
+          color $color-white
+          font-weight 600
+          font-size rem(16)
+          display flex
+          justify-content flex-end
+          .label 
+            color $color-oak
+            text-transform uppercase
+            margin-right rem(2)
+      .times 
         display flex
-        justify-content flex-end
-        .label
+        justify-content space-between
+        padding rem(15) $padding-right rem(15) $padding-left
+        .times-column-one 
+          display flex
+          flex-direction column
+          align-items flex-start
+          text-align left
           color $color-oak
-          text-transform uppercase
-          margin-right rem(2)
-    .times
-      display flex
-      justify-content space-between
-      padding rem(15) $padding-right rem(15) $padding-left
-      .times-column-one
-        display flex
-        flex-direction column
-        align-items flex-start
-        text-align left
-        color $color-oak 
-        width 50%
-        .boat
-          opacity .5
-          width 80%
-          &.current
-            opacity 1
-            border-top rem(.5) solid $color-oak
-            margin-top rem(10)
-            padding-top rem(10)
-            .boat-wrapper
-              .boat-time-name
-                flex-direction column-reverse
-                font-weight 600
-                .boat-time
-                  align-items flex-end
-                  .hours-minutes
-                    font-size rem(45)
-                    line-height rem(45)
-                  .am-pm
+          width 50%
+          .boat 
+            opacity 0.5
+            width 80%
+            &.departed
+              flex 1
+            &.current 
+              opacity 1
+              border-top rem(1) solid $color-oak
+              margin-top rem(10)
+              padding-top rem(10)
+              .boat-wrapper 
+                .boat-time-name 
+                  flex-direction column-reverse
+                  font-weight 600
+                  .boat-time 
+                    align-items flex-end
+                    .hours-minutes 
+                      font-size rem(45)
+                      line-height rem(45)
+                    .am-pm 
+                      font-size rem(26)
+                      margin-bottom rem(3)
+                  .boat-name 
                     font-size rem(26)
-                    margin-bottom rem(3)
-                .boat-name
-                  font-size rem(26)
-                  align-self flex-start
-              .boat-delayed
-                &.ontime
-                  color $color-white
-                
-        .boat-wrapper
-            .boat-departed
-              .departed
+                    align-self flex-start
+                .boat-delayed 
+                  &.ontime 
+                    color $color-white
+
+          .boat-wrapper 
+            .boat-departed 
+              .departed 
                 display flex
                 justify-content space-between
                 align-items center
                 max-width 75%
-                .text
+                .text 
                   color $color-oak
                   text-transform uppercase
-                .image
-                  img
+                .image 
+                  img 
                     width rem(40)
                     height rem(13)
-            .boat-next
-                display flex
-                justify-content space-between
-                align-items center
-                max-width 75%
-                .text
-                  color $color-white
-                  margin-right rem(3)
-                  text-transform uppercase
-                .image
-                  img
-                    width rem(40)
-                    height rem(13)
-            .boat-time-name
+            .boat-next 
               display flex
-              .boat-time
+              justify-content space-between
+              align-items center
+              max-width 75%
+              .text 
+                color $color-white
+                margin-right rem(3)
+                text-transform uppercase
+              .image 
+                img 
+                  width rem(40)
+                  height rem(13)
+            .boat-time-name 
+              display flex
+              .boat-time 
                 display flex
                 text-transform uppercase
                 font-size rem(26)
                 line-height rem(26)
                 margin-right rem(5)
-              .boat-name
+              .boat-name 
                 align-self flex-end
-
-      .times-column-two
-        width 50%
-        text-align left
-        padding-top rem(10)
-        .boat-label-wrapper
-          border-bottom rem(.5) solid @color-white
-          margin-bottom rem(10)
-          padding rem(4)
-          .boat-label
-            text-transform uppercase
-            font-weight 600
-        .boat
-          .boat-wrapper
-            .boat-time-name
-              display flex
-              align-items flex-end
+              
+        .times-column-two 
+          width 50%
+          text-align left
+          padding-top rem(28)
+          .boat-label-wrapper 
+            border-bottom rem(0.5) solid @color-white
+            margin-bottom rem(10)
+            padding rem(4)
+            .boat-label 
+              text-transform uppercase
               font-weight 600
-              padding-bottom rem(5)
-              .boat-time
-                text-transform uppercase
-                margin-right rem(10)
-                font-weight 400
-                font-size 1.2em
-                min-width rem(80)
-                text-align right
-          
+          .boat 
+            .boat-wrapper 
+              .boat-time-name 
+                display flex
+                align-items flex-end
+                font-weight 600
+                padding-bottom rem(5)
+                .boat-time 
+                  text-transform uppercase
+                  margin-right rem(10)
+                  font-weight 400
+                  font-size 1.2em
+                  min-width rem(80)
+                  text-align right
+                
