@@ -233,14 +233,15 @@ function writeSchedules () {
       if (flushDate > cacheDate && !error && !useOnlyCache) {
         let today = moment().tz(timezone).format('YYYY-MM-DD')
         let apiUrl = util.format('%s/%s/%s/%s/%s?apiaccesscode=%s', apiRoot, 'schedule', today, departingTerminalId, arrivingTerminalId, apiAccessCode)
-        let fileStream = fs.createWriteStream(destinationUrl)
-        request.get(apiUrl).pipe(fileStream)
-        fileStream.on('finish', function (err) {
-            cacheDate = moment().tz(timezone).unix().valueOf()
+        request.get(apiUrl, function (err, status, data){ 
+          if(!err){
+            fs.writeFile(data, destinationUrl) 
             logger.debug({
               msg: 'Wrote cache: ' + fileName
             })
-            _this.sendData(routeIndex, destinationUrl, err)
+          }
+          cacheDate = moment().tz(timezone).unix().valueOf()
+          _this.sendData(routeIndex, destinationUrl)
         })
       } else {
         logger.debug({
@@ -250,12 +251,17 @@ function writeSchedules () {
         }
     })
   }
-  _this.sendData = function (routeIndex, destinationUrl, err) {
-    _this.routesLoaded ++
-    if (!err) {
-      let newTimes = _this.scrubScheduleTimes(routeIndex, destinationUrl)
-      _this.settings.default.appInfo.routes[routeIndex].times = newTimes
+  _this.sendData = function (routeIndex, destinationUrl) {
+    try {
+      require(destinationUrl)
+    } catch (error) {
+      return
     }
+    _this.routesLoaded ++
+    
+    let newTimes = _this.scrubScheduleTimes(routeIndex, destinationUrl)
+    _this.settings.default.appInfo.routes[routeIndex].times = newTimes
+    
     if (_this.settings.default.appInfo.routes.length === _this.routesLoaded) {
       window.send('loadSettings', {
         'data': _this.settings
