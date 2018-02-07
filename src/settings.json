@@ -9,7 +9,7 @@
       "routes": [{
           "departingTerminalId": "22",
           "arrivingTerminalId": "9",
-          "fileName": "faultleroy.json",
+          "fileName": "fauntleroy.json",
           "terminal": "North",
           "destination": "Fauntleroy (West Seattle)",
           "onlyRemainingTimes": "false",

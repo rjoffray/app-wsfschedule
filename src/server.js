@@ -190,14 +190,14 @@ function writeSchedules () {
       })
     })
   }
-  _this.getSchedule = function (routeIndex, fileName, departingTerminalId, arrivingTerminalId, onlyRemaingTimes) {
+  _this.getSchedule = async function (routeIndex, fileName, departingTerminalId, arrivingTerminalId, onlyRemaingTimes) {
     let cacheFlushUrl = util.format('%s/%s?apiaccesscode=%s', apiRoot, 'cacheflushdate', apiAccessCode)
     let flushDate = null
     /**
      * We will need to check the WSF api endpoint
      * to see when the last time they flushed the cache
      */
-    request.get({url: cacheFlushUrl, json: true}, function (error, response, body) {
+    await request.get({url: cacheFlushUrl, json: true}, function (error, response, body) {
       /** if we dont have an error we can assume we have an internet connection */
       if (!error) {
         flushDate = moment(body).tz(timezone).unix().valueOf()
@@ -233,15 +233,14 @@ function writeSchedules () {
       if (flushDate > cacheDate && !error && !useOnlyCache) {
         let today = moment().tz(timezone).format('YYYY-MM-DD')
         let apiUrl = util.format('%s/%s/%s/%s/%s?apiaccesscode=%s', apiRoot, 'schedule', today, departingTerminalId, arrivingTerminalId, apiAccessCode)
-        request.get(apiUrl, function (err, status, data){ 
-          if(!err){
-            fs.writeFile(data, destinationUrl) 
+        let fileStream = fs.createWriteStream(destinationUrl)
+        request.get(apiUrl).pipe(fileStream)
+        fileStream.on('finish', function (err) {
+            cacheDate = moment().tz(timezone).unix().valueOf()
             logger.debug({
               msg: 'Wrote cache: ' + fileName
             })
-          }
-          cacheDate = moment().tz(timezone).unix().valueOf()
-          _this.sendData(routeIndex, destinationUrl)
+            _this.sendData(routeIndex, destinationUrl, err)
         })
       } else {
         logger.debug({
@@ -251,12 +250,8 @@ function writeSchedules () {
         }
     })
   }
-  _this.sendData = function (routeIndex, destinationUrl) {
-    try {
-      require(destinationUrl)
-    } catch (error) {
-      return
-    }
+  _this.sendData = function (routeIndex, destinationUrl,err) {
+    
     _this.routesLoaded ++
     
     let newTimes = _this.scrubScheduleTimes(routeIndex, destinationUrl)
