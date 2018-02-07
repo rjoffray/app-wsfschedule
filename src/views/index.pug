@@ -52,7 +52,7 @@ html(ng-app='appWsfschedule')
                   .boat-time-name
                     .boat-time(ng-bind-html='splitTime(current.time)')
                     .boat-name(ng-bind-html='current.vesselName')
-                  .boat-delayed(ng-class="{'ontime':boatStatus[current.vesselId].departDelayed != 'Y'}", ng-bind-html="boatStatus[boat.vesselId].departDelayed == 'Y'?'(Delayed)':'(On Time)'", ng-if='!boat.status' )
+                  .boat-delayed(ng-class="{'ontime':boatStatus[current.vesselId].departDelayed != 'Y'}", ng-bind-html="boatStatus[current.vesselId].departDelayed == 'Y'?'(Delayed)':'(On Time)'" )
               .boat-status(ng-bind='route.times[0].status' ng-if='route.times[0].status')
             .times-column-two
               .boat-label-wrapper(ng-if='route.times.upcoming.length >= 1')

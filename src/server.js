@@ -197,10 +197,10 @@ function writeSchedules () {
      * We will need to check the WSF api endpoint
      * to see when the last time they flushed the cache
      */
-    request.get(cacheFlushUrl, function (error, response, body) {
+    request.get({url: cacheFlushUrl, json: true}, function (error, response, body) {
       /** if we dont have an error we can assume we have an internet connection */
       if (!error) {
-        flushDate = moment(JSON.parse(body)).tz(timezone).unix().valueOf()
+        flushDate = moment(body).tz(timezone).unix().valueOf()
       }
       let destinationUrl = join(publicPath, 'data', fileName)
 
@@ -236,18 +236,18 @@ function writeSchedules () {
         let fileStream = fs.createWriteStream(destinationUrl)
         request.get(apiUrl).pipe(fileStream)
         fileStream.on('finish', function (err) {
-          cacheDate = moment().tz(timezone).unix().valueOf()
-          logger.debug({
-            msg: 'Wrote cache: ' + fileName
-          })
-          _this.sendData(routeIndex, destinationUrl, err)
+            cacheDate = moment().tz(timezone).unix().valueOf()
+            logger.debug({
+              msg: 'Wrote cache: ' + fileName
+            })
+            _this.sendData(routeIndex, destinationUrl, err)
         })
       } else {
         logger.debug({
           msg: 'Reading cache: ' + fileName
         })
-        _this.sendData(routeIndex, destinationUrl)
-      }
+          _this.sendData(routeIndex, destinationUrl)
+        }
     })
   }
   _this.sendData = function (routeIndex, destinationUrl, err) {
