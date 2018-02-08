@@ -4,3 +4,4 @@ docker-compose.yml
 scripts/
 .git/
 build.sh
+src/public/data/*.json

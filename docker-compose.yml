@@ -14,8 +14,8 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - /dev/shm:/dev/shm
       # - ./src:/data/oak/app/src
-    # environment:
-    #   NODE_ENV: 'development'
+    environment:
+      NODE_ENV: 'development'
 
   lights:
     container_name: lights

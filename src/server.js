@@ -183,16 +183,16 @@ function writeSchedules () {
     }, function (error, response, body) {
       if (error) {
         logger.debug({
-          msg: "VesselWatchUrl Failed",
+          msg: 'VesselWatchUrl Failed',
           error
         })
         return
-      } 
+      }
 
       body.vessellist.map(function (obj) {
         vesselStatus[obj.vesselID] = obj
       })
-    
+
       window.send('loadStatus', {
         'data': vesselStatus
       })
@@ -200,7 +200,6 @@ function writeSchedules () {
       logger.debug({
         msg: 'Sent loadStatus'
       })
-
     })
   }
   _this.getSchedule = async function (routeIndex, fileName, departingTerminalId, arrivingTerminalId, onlyRemaingTimes) {
@@ -210,24 +209,25 @@ function writeSchedules () {
      * We will need to check the WSF api endpoint
      * to see when the last time they flushed the cache
      */
-    await request.get({
+    request.get({
       url: flushDateUrl,
-      json: true,
-      agent: false,
-      pool: {
-        maxSockets: 100
-      }
+      json: true
     }, function (error, response, body) {
       if (error) {
         logger.debug({
-          msg: "flushDateUrl Failed",
+          msg: 'flushDateUrl Failed',
           error
         })
         return
-      } 
+      }
       /** if we dont have an error we can assume we have an internet connection */
       if (!error) {
         flushDate = moment(body).tz(timezone).unix().valueOf()
+      } else {
+        logger.error({
+          msg: 'flush date error',
+          error
+        })
       }
       let destinationUrl = join(publicPath, 'data', fileName)
 
@@ -252,7 +252,6 @@ function writeSchedules () {
           logger.debug({
             msg: 'Cache flushed on the hour'
           })
-          
         }
       }
       /**
@@ -262,30 +261,47 @@ function writeSchedules () {
       if (flushDate > cacheDate && !error && !useOnlyCache) {
         let today = moment().tz(timezone).format('YYYY-MM-DD')
         let apiUrl = util.format('%s/%s/%s/%s/%s?apiaccesscode=%s', apiRoot, 'schedule', today, departingTerminalId, arrivingTerminalId, apiAccessCode)
-
-        request.get({
-          url: apiUrl,
-          json: true,
-          agent: false,
-          pool: {
-            maxSockets: 100
-          }
+        let ws = fs.createWriteStream(destinationUrl)
+        logger.debug({
+          msg: 'creating write stream',
+          routeIndex,
+          destinationUrl
         })
-        .pipe(fs.createWriteStream(destinationUrl)
-        .on('finish', function (error) {
-          if (error) {
-            logger.debug({
-              msg: "apiUrl Failed",
-              error
-            })
-            return
-          } 
+
+        ws.on('finish', function (err) {
           cacheDate = moment().tz(timezone).unix().valueOf()
           logger.debug({
             msg: 'Wrote cache: ' + fileName
           })
-          _this.sendData(routeIndex, destinationUrl, error)
-        }))
+          _this.sendData(routeIndex, destinationUrl, err)
+        })
+
+        ws.on('error', function (error) {
+          logger.error({
+            msg: 'schedule write stream error',
+            error
+          })
+        })
+
+        logger.debug({
+          msg: 'requesting schedule',
+          routeIndex,
+          apiUrl
+        })
+
+        let req = request.get({
+          url: apiUrl,
+          json: true
+        })
+
+        req.on('error', function (error) {
+          logger.error({
+            msg: 'schdule api request error',
+            error
+          })
+        })
+
+        req.pipe(ws)
       } else {
         logger.debug({
           msg: 'Reading cache: ' + fileName
