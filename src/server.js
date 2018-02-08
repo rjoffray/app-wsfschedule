@@ -194,8 +194,7 @@ function writeSchedules () {
       })
 
       logger.debug({
-        msg: 'Sent loadStatus',
-        vesselStatus
+        msg: 'Sent loadStatus'
       })
     })
   }
@@ -323,8 +322,7 @@ function writeSchedules () {
         'data': _this.settings
       })
       logger.debug({
-        msg: 'Sent loadSettings',
-        settings: _this.settings
+        msg: 'Sent loadSettings'
       })
 
       /**
