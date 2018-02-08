@@ -234,14 +234,19 @@ function writeSchedules () {
         let today = moment().tz(timezone).format('YYYY-MM-DD')
         let apiUrl = util.format('%s/%s/%s/%s/%s?apiaccesscode=%s', apiRoot, 'schedule', today, departingTerminalId, arrivingTerminalId, apiAccessCode)
         let fileStream = fs.createWriteStream(destinationUrl)
-        request.get(apiUrl).pipe(fileStream)
+       
         fileStream.on('finish', function (err) {
             cacheDate = moment().tz(timezone).unix().valueOf()
             logger.debug({
               msg: 'Wrote cache: ' + fileName
             })
             _this.sendData(routeIndex, destinationUrl, err)
+
+            callback(null);
         })
+        
+        request.get(apiUrl).pipe(fileStream)
+        
       } else {
         logger.debug({
           msg: 'Reading cache: ' + fileName
