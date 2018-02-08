@@ -181,20 +181,26 @@ function writeSchedules () {
         maxSockets: 100
       }
     }, function (error, response, body) {
+      if (error) {
+        logger.debug({
+          msg: "VesselWatchUrl Failed",
+          error
+        })
+        return
+      } 
+
       body.vessellist.map(function (obj) {
         vesselStatus[obj.vesselID] = obj
       })
-      if (error) {
-        logger.error({
-          msg: 'Error getting vesselWatch data'
-        })
-      }
+    
       window.send('loadStatus', {
         'data': vesselStatus
       })
+
       logger.debug({
         msg: 'Sent loadStatus'
       })
+
     })
   }
   _this.getSchedule = async function (routeIndex, fileName, departingTerminalId, arrivingTerminalId, onlyRemaingTimes) {
@@ -212,6 +218,13 @@ function writeSchedules () {
         maxSockets: 100
       }
     }, function (error, response, body) {
+      if (error) {
+        logger.debug({
+          msg: "flushDateUrl Failed",
+          error
+        })
+        return
+      } 
       /** if we dont have an error we can assume we have an internet connection */
       if (!error) {
         flushDate = moment(body).tz(timezone).unix().valueOf()
@@ -259,12 +272,19 @@ function writeSchedules () {
           }
         })
         .pipe(fs.createWriteStream(destinationUrl)
-        .on('finish', function (err) {
+        .on('finish', function (error) {
+          if (error) {
+            logger.debug({
+              msg: "apiUrl Failed",
+              error
+            })
+            return
+          } 
           cacheDate = moment().tz(timezone).unix().valueOf()
           logger.debug({
             msg: 'Wrote cache: ' + fileName
           })
-          _this.sendData(routeIndex, destinationUrl, err)
+          _this.sendData(routeIndex, destinationUrl, error)
         }))
       } else {
         logger.debug({
@@ -274,7 +294,7 @@ function writeSchedules () {
       }
     })
   }
-  _this.sendData = function (routeIndex, destinationUrl, err) {
+  _this.sendData = function (routeIndex, destinationUrl, error) {
     _this.routesLoaded ++
     let newTimes = _this.scrubScheduleTimes(routeIndex, destinationUrl)
     _this.settings.default.appInfo.routes[routeIndex].times = newTimes
