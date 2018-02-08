@@ -97,7 +97,7 @@ const jsFiles = _.map(
 
 logger.debug({
   msg: 'client js files loaded',
-  files: jsFiles
+  jsFiles
 })
 
 let window = null
@@ -198,7 +198,8 @@ function writeSchedules () {
       })
 
       logger.debug({
-        msg: 'Sent loadStatus'
+        msg: 'Sent loadStatus',
+        vesselStatus
       })
     })
   }
@@ -250,7 +251,8 @@ function writeSchedules () {
           useOnlyCache = false
           flushDate = moment().add(30, 'seconds').tz(timezone).unix().valueOf()
           logger.debug({
-            msg: 'Cache flushed on the hour'
+            msg: 'Cache flushed on the hour',
+            flushDate
           })
         }
       }
@@ -271,7 +273,8 @@ function writeSchedules () {
         ws.on('finish', function (err) {
           cacheDate = moment().tz(timezone).unix().valueOf()
           logger.debug({
-            msg: 'Wrote cache: ' + fileName
+            msg: 'Wrote cache',
+            fileName
           })
           _this.sendData(routeIndex, destinationUrl, err)
         })
@@ -304,7 +307,8 @@ function writeSchedules () {
         req.pipe(ws)
       } else {
         logger.debug({
-          msg: 'Reading cache: ' + fileName
+          msg: 'Reading cache',
+          fileName
         })
         _this.sendData(routeIndex, destinationUrl, null)
       }
@@ -313,6 +317,9 @@ function writeSchedules () {
   _this.sendData = function (routeIndex, destinationUrl, error) {
     _this.routesLoaded ++
     let newTimes = _this.scrubScheduleTimes(routeIndex, destinationUrl)
+    if (!newTimes) {
+      return false
+    }
     _this.settings.default.appInfo.routes[routeIndex].times = newTimes
 
     if (_this.settings.default.appInfo.routes.length === _this.routesLoaded) {
@@ -320,7 +327,8 @@ function writeSchedules () {
         'data': _this.settings
       })
       logger.debug({
-        msg: 'Sent loadSettings'
+        msg: 'Sent loadSettings',
+        settings: _this.settings
       })
 
       /**
@@ -334,7 +342,12 @@ function writeSchedules () {
     }
   }
   _this.scrubScheduleTimes = function (routeIndex, destinationUrl) {
-    let fullSchedule = require(destinationUrl)
+    let fullSchedule = {}
+    try {
+      fullSchedule = require(destinationUrl)
+    } catch (e) {
+      return false
+    }
     let foundIndex = -1
     let remainingTimes = fullSchedule.TerminalCombos[0].Times.map(
       function (obj, index) {
@@ -378,7 +391,7 @@ function writeSchedules () {
   for (let routeIndex in _this.settings.default.appInfo.routes) {
     let route = _this.settings.default.appInfo.routes[routeIndex]
     try {
-      _this.getSchedule(routeIndex, route.fileName, route.departingTerminalId, route.arrivingTerminalId, route.onlyRemainingTimes)   
+      _this.getSchedule(routeIndex, route.fileName, route.departingTerminalId, route.arrivingTerminalId, route.onlyRemainingTimes)
     } catch (error) {
       logger.debug({
         msg: error,
@@ -386,7 +399,6 @@ function writeSchedules () {
         route
       })
     }
-   
   }
   _this.sendStatusData()
 }
