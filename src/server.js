@@ -175,11 +175,7 @@ function writeSchedules () {
     let vesselStatus = {}
     request.get({
       url: vesselWatchUrl,
-      json: true,
-      agent: false,
-      pool: {
-        maxSockets: 100
-      }
+      json: true
     }, function (error, response, body) {
       if (error) {
         logger.debug({
