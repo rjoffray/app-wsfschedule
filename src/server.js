@@ -13,12 +13,12 @@ const qs = require('querystring')
 const tools = require('oak-tools')
 const request = require('request')
 const fs = require('graceful-fs')
-const _setTimeout = require('safe-timers').setTimeout
+const _setInterval = require('safe-timers').setInterval
 
 const apiRoot = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest'
 const apiAccessCode = 'beae0283-3493-4760-9997-04b1c32a23e2'
 const timezone = 'America/Los_Angeles'
-let timer = null
+
 // this prevents window dialog instances from popping up when something throws. This gets logged instead of blowing up in the UI.
 oak.catchErrors()
 
@@ -42,7 +42,8 @@ let viewsPath = join(__dirname, 'views')
  * force us to get new data when the app first starts
  * we will use unix timestamp as a standard of comparison
 **/
-let cacheDate = moment().subtract(1, 'days').tz(timezone).unix().valueOf()
+let cacheDate = moment().subtract(1, 'days').tz(timezone)
+let flushDate = moment().tz(timezone)
 
 app.set('views', viewsPath)
 app.set('view engine', 'pug')
@@ -166,41 +167,42 @@ function reloadIt (err) {
   oldWindow.close()
 }
 
+function sendStatusData () {
+  let vesselWatchUrl = 'http://www.wsdot.com/ferries/vesselwatch/Vessels.ashx'
+  let vesselStatus = {}
+  request.get({
+    url: vesselWatchUrl,
+    json: true
+  }, function (error, response, body) {
+    if (error) {
+      logger.debug({
+        msg: 'VesselWatchUrl Failed'
+      })
+      return
+    }
+
+    body.vessellist.map(function (obj) {
+      vesselStatus[obj.vesselID] = obj
+    })
+
+    window.send('loadStatus', {
+      'data': vesselStatus
+    })
+
+    logger.debug({
+      msg: 'Sent loadStatus'
+    })
+  })
+}
+
 function writeSchedules () {
   let _this = this
   _this.settings = require(settingsPath + '.json')
   _this.routesLoaded = 0
-  _this.sendStatusData = function () {
-    let vesselWatchUrl = 'http://www.wsdot.com/ferries/vesselwatch/Vessels.ashx'
-    let vesselStatus = {}
-    request.get({
-      url: vesselWatchUrl,
-      json: true
-    }, function (error, response, body) {
-      if (error) {
-        logger.debug({
-          msg: 'VesselWatchUrl Failed',
-          error
-        })
-        return
-      }
 
-      body.vessellist.map(function (obj) {
-        vesselStatus[obj.vesselID] = obj
-      })
-
-      window.send('loadStatus', {
-        'data': vesselStatus
-      })
-
-      logger.debug({
-        msg: 'Sent loadStatus'
-      })
-    })
-  }
   _this.getSchedule = async function (routeIndex, fileName, departingTerminalId, arrivingTerminalId, onlyRemaingTimes) {
     let flushDateUrl = util.format('%s/%s?apiaccesscode=%s', apiRoot, 'cacheflushdate', apiAccessCode)
-    let flushDate = moment().tz(timezone).unix().valueOf()
+    flushDate = moment().tz(timezone)
     /**
      * We will need to check the WSF api endpoint
      * to see when the last time they flushed the cache
@@ -209,20 +211,16 @@ function writeSchedules () {
       url: flushDateUrl,
       json: true
     }, function (error, response, body) {
-      if (error) {
-        logger.debug({
-          msg: 'flushDateUrl Failed',
-          error
-        })
-        return
-      }
       /** if we dont have an error we can assume we have an internet connection */
       if (!error) {
-        flushDate = moment(body).tz(timezone).unix().valueOf()
+        try {
+          flushDate = moment(body).tz(timezone)
+        } catch (error) {
+          flushDate = moment().tz(timezone)
+        }
       } else {
         logger.error({
-          msg: 'flush date error',
-          error
+          msg: 'flush date error'
         })
       }
       let destinationUrl = join(publicPath, 'data', fileName)
@@ -235,7 +233,7 @@ function writeSchedules () {
       let useOnlyCache = false
       let format = 'HH:mm:ss'
       let beforeTime = moment('11:59:00', format)
-      let afterTime = moment('02:59:00', format)
+      let afterTime = moment('02:57:00', format)
       let nowTime = moment().tz(timezone)
 
       if (nowTime.isBetween(beforeTime, afterTime)) {
@@ -244,10 +242,9 @@ function writeSchedules () {
         /** we will flushDate every hour at the 58 minute mark between 3am and 11:58pm */
         if (nowTime.format('mm') === '58') {
           useOnlyCache = false
-          flushDate = moment().add(30, 'seconds').tz(timezone).unix().valueOf()
+          flushDate = moment().tz(timezone)
           logger.debug({
-            msg: 'Cache flushed on the hour',
-            flushDate
+            msg: 'Cache flushed on the hour'
           })
         }
       }
@@ -255,36 +252,24 @@ function writeSchedules () {
        * If the new flush date is greater that our last cache and there is no
        * network error we will need to go get a new copy of the data
        */
-      if (flushDate > cacheDate && !error && !useOnlyCache) {
+      if (flushDate.isAfter(cacheDate) && !error && !useOnlyCache) {
         let today = moment().tz(timezone).format('YYYY-MM-DD')
         let apiUrl = util.format('%s/%s/%s/%s/%s?apiaccesscode=%s', apiRoot, 'schedule', today, departingTerminalId, arrivingTerminalId, apiAccessCode)
         let ws = fs.createWriteStream(destinationUrl)
-        logger.debug({
-          msg: 'creating write stream',
-          routeIndex,
-          destinationUrl
-        })
 
         ws.on('finish', function (err) {
-          cacheDate = moment().tz(timezone).unix().valueOf()
+          cacheDate = moment().tz(timezone)
           logger.debug({
-            msg: 'Wrote cache',
-            fileName
+            msg: 'Wrote cache: ' + fileName
           })
           _this.sendData(routeIndex, destinationUrl, err)
         })
 
         ws.on('error', function (error) {
           logger.error({
-            msg: 'schedule write stream error',
+            msg: 'Schedule write stream error',
             error
           })
-        })
-
-        logger.debug({
-          msg: 'requesting schedule',
-          routeIndex,
-          apiUrl
         })
 
         let req = request.get({
@@ -294,7 +279,7 @@ function writeSchedules () {
 
         req.on('error', function (error) {
           logger.error({
-            msg: 'schdule api request error',
+            msg: 'Schdule api request error',
             error
           })
         })
@@ -302,8 +287,7 @@ function writeSchedules () {
         req.pipe(ws)
       } else {
         logger.debug({
-          msg: 'Reading cache',
-          fileName
+          msg: 'Reading cache: ' + fileName
         })
         _this.sendData(routeIndex, destinationUrl, null)
       }
@@ -324,32 +308,28 @@ function writeSchedules () {
       logger.debug({
         msg: 'Sent loadSettings'
       })
-
-      /**
-       * We are using a timeout to avoid using setInterval
-       * so we can repeat
-       */
-      if (timer) timer.clear()
-      timer = _setTimeout(function (msg) {
-        writeSchedules()
-      }, 60000)
     }
   }
   _this.scrubScheduleTimes = function (routeIndex, destinationUrl) {
     let fullSchedule = {}
     try {
       fullSchedule = require(destinationUrl)
-    } catch (e) {
-      return false
+    } catch (error) {
+      logger.debug({
+        msg: 'Could not read full schedule',
+        error
+      })
+      return fullSchedule
     }
+
     let foundIndex = -1
     let remainingTimes = fullSchedule.TerminalCombos[0].Times.map(
       function (obj, index) {
-        let now = moment().tz(timezone).unix()
-        let unixTime = moment(obj.DepartingTime).tz(timezone).unix()
+        let now = moment().tz(timezone)
+        let DepartingTime = moment(obj.DepartingTime).tz(timezone)
         let className = 'departed'
 
-        if (unixTime >= now) {
+        if (DepartingTime.isAfter(now)) {
           if (foundIndex === -1) {
             className = 'current'
             foundIndex = index - 1
@@ -388,11 +368,13 @@ function writeSchedules () {
       _this.getSchedule(routeIndex, route.fileName, route.departingTerminalId, route.arrivingTerminalId, route.onlyRemainingTimes)
     } catch (error) {
       logger.debug({
-        msg: error,
-        routeIndex,
-        route
+        msg: error
       })
     }
   }
-  _this.sendStatusData()
 }
+
+_setInterval(function (msg) {
+  writeSchedules()
+  sendStatusData()
+}, 60000)

@@ -18,10 +18,10 @@
     "express": "~4.15.3",
     "graceful-fs": "~4.1.11",
     "lodash": "~4.17.4",
-    "moment-timezone": "^0.5.14",
+    "moment-timezone": "~0.5.14",
     "oak-tools": "~0.5.1",
     "pug": "~2.0.0-rc.2",
-    "request": "^2.83.0",
+    "request": "~2.83.0",
     "safe-timers": "~1.1.0",
     "stylus": "~0.54.5",
     "walk-sync": "~0.3.2"

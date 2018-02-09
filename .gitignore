@@ -2,4 +2,3 @@ node_modules/
 src/public/index.css
 scripts/gcf/auth*.json
 *.log
-src/public/data/*.json
