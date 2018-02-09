@@ -13,7 +13,6 @@ const qs = require('querystring')
 const tools = require('oak-tools')
 const request = require('request')
 const fs = require('graceful-fs')
-const _setInterval = require('safe-timers').setInterval
 
 const apiRoot = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest'
 const apiAccessCode = 'beae0283-3493-4760-9997-04b1c32a23e2'
@@ -374,7 +373,8 @@ function writeSchedules () {
   }
 }
 
-_setInterval(function (msg) {
+var CronJob = require('cron').CronJob;
+new CronJob('0 * * * * *', function() {
   writeSchedules()
   sendStatusData()
-}, 60000)
+}, null, true, timezone);
