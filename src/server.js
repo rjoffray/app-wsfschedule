@@ -202,7 +202,7 @@ function writeSchedules () {
 
   _this.getSchedule = async function (routeIndex, fileName, departingTerminalId, arrivingTerminalId, onlyRemaingTimes) {
     let flushDateUrl = util.format('%s/%s?apiaccesscode=%s', apiRoot, 'cacheflushdate', apiAccessCode)
-    flushDate = moment().tz(timezone)
+    //flushDate = moment().tz(timezone)
     /**
      * We will need to check the WSF api endpoint
      * to see when the last time they flushed the cache
@@ -213,10 +213,9 @@ function writeSchedules () {
     }, function (error, response, body) {
       /** if we dont have an error we can assume we have an internet connection */
       if (!error) {
-        try {
+        let fd = moment(body)
+        if (fd.isValid()) {
           flushDate = moment(body).tz(timezone)
-        } catch (error) {
-          flushDate = moment().tz(timezone)
         }
       } else {
         logger.error({
@@ -292,6 +291,7 @@ function writeSchedules () {
         _this.sendData(routeIndex, destinationUrl, null)
       }
     })
+    flushDate = moment().tz(timezone)
   }
   _this.sendData = function (routeIndex, destinationUrl, error) {
     _this.routesLoaded ++
