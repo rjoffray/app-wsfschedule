@@ -237,15 +237,14 @@ function writeSchedules () {
       if (nowTime.isBetween(beforeTime, afterTime)) {
         useOnlyCache = true
       } else {
-        /** we will flushDate every hour at the 58 minute mark between 3am and 11:58pm */
-        if (nowTime.format('mm') === '58') {
+        if (nowTime.isAfter(afterTime) && nowTime.isBefore(beforeTime)) {
           useOnlyCache = false
-          flushDate = moment().tz(timezone)
-          logger.debug({
-            msg: 'Cache flushed on the hour'
-          })
         }
       }
+      logger.debug({
+        msg: 'Using Cache:',
+        useOnlyCache
+      })
       /**
        * If the new flush date is greater that our last cache and there is no
        * network error we will need to go get a new copy of the data
@@ -377,4 +376,9 @@ var CronJob = require('cron').CronJob;
 new CronJob('0 * * * * *', function() {
   writeSchedules()
   sendStatusData()
+}, null, true, timezone);
+
+var CronJob = require('cron').CronJob;
+new CronJob('00 40 03 * * *', function() {
+  reloadIt("Restarting Server")
 }, null, true, timezone);
