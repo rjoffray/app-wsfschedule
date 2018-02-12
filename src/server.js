@@ -241,10 +241,7 @@ function writeSchedules () {
           useOnlyCache = false
         }
       }
-      logger.debug({
-        msg: 'Using Cache:',
-        useOnlyCache
-      })
+
       /**
        * If the new flush date is greater that our last cache and there is no
        * network error we will need to go get a new copy of the data
