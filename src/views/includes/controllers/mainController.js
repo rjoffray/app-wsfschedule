@@ -10,11 +10,12 @@
     $scope.timezone = 'America/Los_Angeles'
 
     $window.oak.on('loadSettings', function (incoming) {
-      console.log(incoming.data.default.appInfo)
+      console.log(incoming)
       $scope.routes = incoming.data.default.appInfo.routes
       $scope.appName = incoming.data.default.appInfo.appName
       $scope.appSubTitle = incoming.data.default.appInfo.appSubTitle
       $scope.today = moment().tz($scope.timezone)
+      $scope.lastUpdated = moment(new Date(incoming.data.default.appInfo.lastUpdated)).format('MMM D h:mm a')
       console.log($scope.today.format('LLLL'))
     })
     $window.oak.on('loadStatus', function (incoming) {

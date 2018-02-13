@@ -295,6 +295,8 @@ function writeSchedules () {
       return false
     }
     _this.settings.default.appInfo.routes[routeIndex].times = newTimes
+    let stats = fs.statSync(destinationUrl)
+    _this.settings.default.appInfo.lastUpdated = moment(util.inspect(stats.mtime)).tz(timezone).format('LLLL') //flushDate.format()
 
     if (_this.settings.default.appInfo.routes.length === _this.routesLoaded) {
       window.send('loadSettings', {
@@ -308,7 +310,9 @@ function writeSchedules () {
   _this.scrubScheduleTimes = function (routeIndex, destinationUrl) {
     let fullSchedule = {}
     try {
+      delete require.cache[destinationUrl]
       fullSchedule = require(destinationUrl)
+      
     } catch (error) {
       logger.debug({
         msg: 'Could not read full schedule',
@@ -375,7 +379,3 @@ new CronJob('0 * * * * *', function() {
   sendStatusData()
 }, null, true, timezone);
 
-var CronJob = require('cron').CronJob;
-new CronJob('00 40 03 * * *', function() {
-  reloadIt("Restarting Server")
-}, null, true, timezone);

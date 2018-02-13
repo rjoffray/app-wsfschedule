@@ -6,6 +6,7 @@
       "lon": "-122.466070",
       "appName": "Vashon",
       "appSubTitle": "Ferry Schedules",
+      "lastUpdated": "",
       "routes": [{
           "departingTerminalId": "22",
           "arrivingTerminalId": "9",
