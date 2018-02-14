@@ -41,8 +41,10 @@ let viewsPath = join(__dirname, 'views')
  * force us to get new data when the app first starts
  * we will use unix timestamp as a standard of comparison
 **/
-let cacheDate = moment().subtract(1, 'days').tz(timezone)
-let flushDate = moment().tz(timezone)
+let cacheDate
+let flushDate
+let today
+let useOnlyCache
 
 app.set('views', viewsPath)
 app.set('view engine', 'pug')
@@ -146,6 +148,7 @@ function loadWindow () {
     window.send('loadSettings', {
       'data': settings
     })
+    initVars()
     writeSchedules()
   })
   .on('log.*', function (props) {
@@ -164,6 +167,13 @@ function reloadIt (err) {
   logger.error(new Error(err))
   loadWindow()
   oldWindow.close()
+}
+
+function initVars(){
+  cacheDate = moment().tz(timezone).subtract(1, 'days')
+  flushDate = moment().tz(timezone)
+  today = moment().tz(timezone).format('YYYY-MM-DD')
+  useOnlyCache = false
 }
 
 function sendStatusData () {
@@ -199,9 +209,8 @@ function writeSchedules () {
   _this.settings = require(settingsPath + '.json')
   _this.routesLoaded = 0
 
-  _this.getSchedule = async function (routeIndex, fileName, departingTerminalId, arrivingTerminalId, onlyRemaingTimes) {
-    let flushDateUrl = util.format('%s/%s?apiaccesscode=%s', apiRoot, 'cacheflushdate', apiAccessCode)
-    //flushDate = moment().tz(timezone)
+  _this.getSchedule = function (routeIndex, fileName, departingTerminalId, arrivingTerminalId, onlyRemaingTimes) {
+    flushDateUrl = util.format('%s/%s?apiaccesscode=%s', apiRoot, 'cacheflushdate', apiAccessCode)
     /**
      * We will need to check the WSF api endpoint
      * to see when the last time they flushed the cache
@@ -224,30 +233,10 @@ function writeSchedules () {
       let destinationUrl = join(publicPath, 'data', fileName)
 
       /**
-       * We need to use the cache copy of the data between midnight
-       * and 3 am
-       * If it is 3 am we will set a new flushDate to get new schedule
-       */
-      let useOnlyCache = false
-      let format = 'HH:mm:ss'
-      let beforeTime = moment('11:59:00', format)
-      let afterTime = moment('02:57:00', format)
-      let nowTime = moment().tz(timezone)
-
-      if (nowTime.isBetween(beforeTime, afterTime)) {
-        useOnlyCache = true
-      } else {
-        if (nowTime.isAfter(afterTime) && nowTime.isBefore(beforeTime)) {
-          useOnlyCache = false
-        }
-      }
-
-      /**
        * If the new flush date is greater that our last cache and there is no
-       * network error we will need to go get a new copy of the data
+       * network error and not using cache only, we will need to go get a new copy of the data 
        */
       if (flushDate.isAfter(cacheDate) && !error && !useOnlyCache) {
-        let today = moment().tz(timezone).format('YYYY-MM-DD')
         let apiUrl = util.format('%s/%s/%s/%s/%s?apiaccesscode=%s', apiRoot, 'schedule', today, departingTerminalId, arrivingTerminalId, apiAccessCode)
         let ws = fs.createWriteStream(destinationUrl)
 
@@ -286,7 +275,6 @@ function writeSchedules () {
         _this.sendData(routeIndex, destinationUrl, null)
       }
     })
-    flushDate = moment().tz(timezone)
   }
   _this.sendData = function (routeIndex, destinationUrl, error) {
     _this.routesLoaded ++
@@ -374,8 +362,45 @@ function writeSchedules () {
 }
 
 var CronJob = require('cron').CronJob;
-new CronJob('0 * * * * *', function() {
+
+new CronJob('10 * * * * *', function() {
+  let showFlushDate = flushDate.format('LLLL')
+  let showCacheDate = cacheDate.format('LLLL')
+  logger.debug({
+    msg: 'Minute Cron',
+    useOnlyCache,
+    showFlushDate,
+    showCacheDate,
+    today
+  })
   writeSchedules()
   sendStatusData()
+}, null, true, timezone);
+
+new CronJob('00 58 11 * * *', function() {
+  useOnlyCache = true
+  let showFlushDate = flushDate.format('LLLL')
+  let showCacheDate = cacheDate.format('LLLL')
+  logger.debug({
+    msg: 'Cache on',
+    useOnlyCache,
+    showFlushDate,
+    showCacheDate,
+    today
+  })
+}, null, true, timezone);
+
+new CronJob('00 20 03 * * *', function() {
+  initVars()
+  let showFlushDate = flushDate.format('LLLL')
+  let showCacheDate = cacheDate.format('LLLL')
+  logger.debug({
+    msg: 'Cache off',
+    useOnlyCache,
+    showFlushDate,
+    showCacheDate,
+    today
+  })
+  
 }, null, true, timezone);
 
