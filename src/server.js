@@ -377,7 +377,7 @@ new CronJob('10 * * * * *', function() {
   sendStatusData()
 }, null, true, timezone);
 
-new CronJob('00 58 11 * * *', function() {
+new CronJob('00 58 23 * * *', function() {
   useOnlyCache = true
   let showFlushDate = flushDate.format('LLLL')
   let showCacheDate = cacheDate.format('LLLL')
