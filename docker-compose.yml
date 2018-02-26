@@ -15,7 +15,7 @@ services:
       - /dev/shm:/dev/shm
       # - ./src:/data/oak/app/src
     environment:
-      NODE_ENV: 'development'
+      NODE_ENV: 'production'
 
   lights:
     container_name: lights
