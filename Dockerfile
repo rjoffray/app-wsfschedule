@@ -1,4 +1,4 @@
-FROM oaklabs/oak:4.1.3
+FROM oaklabs/oak:5.0.9
 
 # all COPY and RUN commands are relative to this path now
 WORKDIR /app
@@ -16,6 +16,6 @@ RUN npm install \
 COPY src /app/src
 
 # by default in the oak container, ENTRYPOINT ["oak"], which uses the global oak module
-CMD ["/app/src/server.js"]
+CMD ["/app/src/index.js"]
 
 ENV NODE_ENV=production

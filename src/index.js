@@ -114,6 +114,7 @@ function loadWindow () {
   window = oak.load({
     url: `http://localhost:${port}/`,
     background: '#000000',
+    ontop: false,
     sslExceptions: ['localhost'],
     /**
     * we load nearly all of our client side code here, including node modules that are useful.

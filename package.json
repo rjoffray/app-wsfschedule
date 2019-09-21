@@ -2,10 +2,14 @@
   "name": "wsf",
   "version": "1.2.3-rc2",
   "description": "wsf schedule signage",
-  "main": "src/server.js",
+  "main": "src/index.js",
+  "engines": {
+    "node": "10.15.3"
+  },
   "scripts": {
-    "start": "./node_modules/.bin/oak src/server.js",
-    "dev": "NODE_ENV=development npm start",
+    "start": "node_modules/.bin/oak .",
+    "dev": "npm start",
+    "rebuild": "rm -rf node_modules/ package-lock.json && npm i && node_modules/.bin/oak-rebuild $(pwd)",
     "test": "exit 0;"
   },
   "author": "Richard Joffray <richard@joffray.com>",
@@ -20,7 +24,7 @@
     "graceful-fs": "~4.1.11",
     "lodash": "~4.17.4",
     "moment-timezone": "~0.5.14",
-    "oak-tools": "~0.5.1",
+    "oak-tools": "~0.5.7",
     "pug": "~2.0.0-rc.2",
     "request": "~2.83.0",
     "stylus": "~0.54.5",
@@ -28,6 +32,7 @@
   },
   "private": true,
   "devDependencies": {
-    "oak": "~4.1.3"
+    "oak": "~5.0.9",
+    "traverse": "^0.6.6"
   }
 }
