@@ -17,19 +17,19 @@ services:
     environment:
       NODE_ENV: 'production'
 
-  lights:
-    container_name: lights
-    image: oaklabs/lights:2.0.0-rc2
-    privileged: true
-    network_mode: host
-    devices:
-      - /dev/bus/usb
-    volumes:
-      - /run/udev:/run/udev
-  api:
-    container_name: api
-    image: oaklabs/oakos-api:1.5.1
-    network_mode: host
-    privileged: true
-    volumes_from:
-      - lights
+  # lights:
+  #   container_name: lights
+  #   image: oaklabs/lights:2.0.0-rc2
+  #   privileged: true
+  #   network_mode: host
+  #   devices:
+  #     - /dev/bus/usb
+  #   volumes:
+  #     - /run/udev:/run/udev
+  # api:
+  #   container_name: api
+  #   image: oaklabs/oakos-api:1.5.1
+  #   network_mode: host
+  #   privileged: true
+  #   volumes_from:
+  #     - lights
